@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: org.jetbrains.compose.foundation:foundation-android-debug:0.3.2@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/21a648176dec101cd0b48141d3bfd429/foundation-debug/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/21a648176dec101cd0b48141d3bfd429/foundation-debug/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.compose.foundation/foundation-android-debug/0.3.2/6203beb4b4ff3983556fa68b79cb9fb41952f37/foundation-android-debug-0.3.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

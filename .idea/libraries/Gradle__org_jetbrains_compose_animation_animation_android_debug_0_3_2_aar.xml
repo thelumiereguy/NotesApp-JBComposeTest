@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: org.jetbrains.compose.animation:animation-android-debug:0.3.2@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/be707e0c94f659c57b3ca17cd483cc26/animation-debug/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/be707e0c94f659c57b3ca17cd483cc26/animation-debug/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.compose.animation/animation-android-debug/0.3.2/6041d6ceba1d79be7c46ac13dea00e71dda1fce7/animation-android-debug-0.3.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

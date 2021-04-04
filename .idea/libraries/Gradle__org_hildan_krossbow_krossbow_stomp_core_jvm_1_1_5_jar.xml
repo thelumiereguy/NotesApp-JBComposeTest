@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.hildan.krossbow:krossbow-stomp-core-jvm:1.1.5@jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.hildan.krossbow/krossbow-stomp-core-jvm/1.1.5/4564aa0df68169db9d600dd08aecbbe7a6edf86c/krossbow-stomp-core-jvm-1.1.5.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.hildan.krossbow/krossbow-stomp-core-jvm/1.1.5/cdb79b990f893d0e2928427c43073e6995521ad5/krossbow-stomp-core-jvm-1.1.5-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

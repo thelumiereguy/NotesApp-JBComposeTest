@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: org.jetbrains.compose.ui:ui-graphics-android-debug:0.3.2@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c8881615c17e7d75d40d8a0c218f5858/ui-graphics-debug/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c8881615c17e7d75d40d8a0c218f5858/ui-graphics-debug/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.compose.ui/ui-graphics-android-debug/0.3.2/bae53d6a9e6819032767d4e0bb4c3086a3e3ef7d/ui-graphics-android-debug-0.3.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
