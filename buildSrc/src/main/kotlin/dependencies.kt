@@ -1,5 +1,5 @@
 object versions {
-    const val krossbowVersion = "1.1.5"
+    const val krossbowVersion = "1.2.0"
 
     const val coroutines = "1.4.3"
 

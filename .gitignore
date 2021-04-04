@@ -5,3 +5,5 @@
 /common/build/
 /common/build/intermediates/javac/debug/classes/
 /desktop/build/
+/buildSrc/build/
+/.idea/

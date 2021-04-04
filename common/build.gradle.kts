@@ -13,6 +13,7 @@ version = "1.0"
 
 repositories {
     google()
+    mavenCentral()
 }
 
 kotlin {
@@ -28,21 +29,19 @@ kotlin {
                 api(compose.runtime)
                 api(compose.foundation)
                 api(compose.material)
-                api("org.jetbrains.kotlin:kotlin-stdlib-common")
+                implementation("org.jetbrains.kotlin:kotlin-stdlib-common")
 
-                api("org.jetbrains.kotlinx:kotlinx-serialization-json:${versions.serialization}")
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${versions.serialization}")
 
-                api("org.hildan.krossbow:krossbow-stomp-core:${versions.krossbowVersion}")
-                api("org.hildan.krossbow:krossbow-websocket-core:${versions.krossbowVersion}")
-                api("org.hildan.krossbow:krossbow-stomp-kxserialization:${versions.krossbowVersion}")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}")
 
-                // MOKO - MVVM
-//                implementation("dev.icerock.moko:mvvm:${versions.moko_mvvm}")
+                implementation("org.hildan.krossbow:krossbow-stomp-core:${versions.krossbowVersion}")
+                implementation("org.hildan.krossbow:krossbow-websocket-core:${versions.krossbowVersion}")
+                implementation("org.hildan.krossbow:krossbow-stomp-kxserialization:${versions.krossbowVersion}")
 
-                // KODE IN
-                api("org.kodein.di:kodein-di-core:${versions.kodein}")
-                api("org.kodein.di:kodein-di-erased:${versions.kodein}")
+//                // KODE IN
+                implementation("org.kodein.di:kodein-di-core:${versions.kodein}")
+                implementation("org.kodein.di:kodein-di-erased:${versions.kodein}")
 
                 // KTOR
                 api("io.ktor:ktor-client-core:${versions.ktor}")
@@ -54,6 +53,9 @@ kotlin {
                 api("androidx.appcompat:appcompat:${versions.appCompat}")
                 api("androidx.activity:activity-compose:${versions.activityCompose}")
                 api("androidx.core:core-ktx:${versions.coreKtx}")
+
+                // COROUTINE
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}")
             }
         }
         val androidTest by getting {
@@ -62,7 +64,11 @@ kotlin {
             }
         }
         val desktopMain by getting
-        val desktopTest by getting
+        val desktopTest by getting {
+            dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}")
+            }
+        }
     }
 }
 

@@ -1,20 +1,23 @@
-package me.user.common.presentation.composables
+package me.user.common
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.Text
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.*
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-fun App(block: () -> Unit) {
+fun App(onLaunched: () -> Unit, onClick: () -> Unit = {}) {
 
-    var text by remember { mutableStateOf("Hello, World!") }
+    val text by remember { mutableStateOf("Hello, World!") }
 
     MaterialTheme {
         Column(
@@ -23,11 +26,11 @@ fun App(block: () -> Unit) {
         ) {
             Button(modifier = Modifier.align(alignment = Alignment.CenterHorizontally),
                 onClick = {
-                    text = "Hello, Desktop!"
+                    onClick()
                 }) {
                 Text(text)
             }
         }
     }
-    block()
+    onLaunched()
 }
