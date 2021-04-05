@@ -7,11 +7,12 @@ object versions {
 
     const val serialization = "1.1.0"
 
-    const val ktor = "1.5.3"
+    const val ktor = "1.5.2"
 
-    const val kodein = "6.5.3"
+    const val koin = "3.0.1-beta-2"
+    const val koinOld = "3.0.1-beta-1"
 
-    const val jetBrainsCompose = "0.3.2"
+    const val jetBrainsCompose = "0.4.0-build178"
 
     const val appCompat = "1.2.0"
 

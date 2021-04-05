@@ -4,7 +4,6 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 plugins {
     kotlin("multiplatform")
     id("org.jetbrains.compose") version versions.jetBrainsCompose
-    id("kotlinx-serialization")
 }
 
 group = "me.user"

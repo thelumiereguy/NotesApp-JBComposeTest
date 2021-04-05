@@ -2,7 +2,6 @@ plugins {
     id("org.jetbrains.compose") version versions.jetBrainsCompose
     id("com.android.application")
     kotlin("android")
-    id("kotlinx-serialization")
 }
 
 group = "me.user"
@@ -16,6 +15,8 @@ repositories {
 dependencies {
     implementation(project(":common"))
     api("org.hildan.krossbow:krossbow-websocket-okhttp:${versions.krossbowVersion}")
+    implementation("io.insert-koin:koin-android:${versions.koin}")
+    implementation("io.insert-koin:koin-androidx-compose:${versions.koinOld}")
 }
 
 android {

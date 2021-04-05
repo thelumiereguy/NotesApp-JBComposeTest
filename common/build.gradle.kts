@@ -2,10 +2,10 @@ import org.jetbrains.compose.compose
 
 plugins {
     kotlin("multiplatform")
+    id("kotlinx-serialization")
     id("org.jetbrains.compose") version versions.jetBrainsCompose
     id("com.android.library")
     id("kotlin-android-extensions")
-    id("kotlinx-serialization")
 }
 
 group = "me.user"
@@ -14,6 +14,17 @@ version = "1.0"
 repositories {
     google()
     mavenCentral()
+}
+
+android {
+    configurations {
+        create("androidTestApi")
+        create("androidTestDebugApi")
+        create("androidTestReleaseApi")
+        create("testApi")
+        create("testDebugApi")
+        create("testReleaseApi")
+    }
 }
 
 kotlin {
@@ -39,12 +50,16 @@ kotlin {
                 implementation("org.hildan.krossbow:krossbow-websocket-core:${versions.krossbowVersion}")
                 implementation("org.hildan.krossbow:krossbow-stomp-kxserialization:${versions.krossbowVersion}")
 
-//                // KODE IN
-                implementation("org.kodein.di:kodein-di-core:${versions.kodein}")
-                implementation("org.kodein.di:kodein-di-erased:${versions.kodein}")
+//                // KOIN
+                api("io.insert-koin:koin-core:${versions.koin}")
+                api("io.insert-koin:koin-test:${versions.koin}")
 
                 // KTOR
-                api("io.ktor:ktor-client-core:${versions.ktor}")
+                implementation("io.ktor:ktor-client-core:${versions.ktor}")
+                implementation("io.ktor:ktor-client-json:${versions.ktor}")
+                implementation("io.ktor:ktor-client-logging:${versions.ktor}")
+                implementation("io.ktor:ktor-client-serialization:${versions.ktor}")
+
             }
         }
         val commonTest by getting
@@ -56,6 +71,8 @@ kotlin {
 
                 // COROUTINE
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}")
+
+                implementation("io.ktor:ktor-client-android:${versions.ktor}")
             }
         }
         val androidTest by getting {
@@ -63,12 +80,13 @@ kotlin {
                 implementation("junit:junit:4.13")
             }
         }
-        val desktopMain by getting
-        val desktopTest by getting {
+        val desktopMain by getting {
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}")
+                implementation("io.ktor:ktor-client-apache:${versions.ktor}")
             }
         }
+        val desktopTest by getting
     }
 }
 
