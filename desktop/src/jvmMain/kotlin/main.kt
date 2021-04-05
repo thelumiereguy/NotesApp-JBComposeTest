@@ -1,17 +1,17 @@
 import androidx.compose.desktop.Window
 import androidx.compose.ui.unit.IntSize
-import me.user.common.App
+import me.user.common.NotesApp
 import me.user.common.di.initKoin
 
 val koinContainer = initKoin().koin
 
 fun main() = Window(
-    size = IntSize(1980, 1080),
+    size = IntSize(1280, 720),
     onDismissRequest = {
 
     }
 ) {
-    App(koinContainer.get(),
+    NotesApp(koinContainer.get(),
         {
 
         })

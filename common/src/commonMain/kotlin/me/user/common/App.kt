@@ -1,6 +1,5 @@
 package me.user.common
 
-import android.widget.StackView
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -15,14 +14,13 @@ import me.user.common.feature.notes.presentation.viewmodel.NotesViewModel
 import me.user.common.feature.notes.presentation.viewmodel.States
 
 @Composable
-fun App(
-    viewmodel: NotesViewModel,
+fun NotesApp(
+    viewModel: NotesViewModel,
     onLaunched: () -> Unit,
-    onClick: () -> Unit = {},
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val state by mutableStateOf(viewmodel.state.collectAsState())
-    val unit = remember { coroutineScope.launch { viewmodel.getNotes() } }
+    val state by mutableStateOf(viewModel.state.collectAsState())
+    val unit = remember { coroutineScope.launch { viewModel.getNotes() } }
 
     MaterialTheme {
         if (state.value == States.Loading) {

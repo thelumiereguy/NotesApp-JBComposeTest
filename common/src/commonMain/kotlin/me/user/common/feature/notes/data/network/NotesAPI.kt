@@ -7,7 +7,7 @@ import me.user.common.feature.notes.data.network.model.GetNotesResponseDTO
 
 class NotesAPI(private val client: HttpClient) {
 
-    private val baseURL = "http://localhost:8080/api"
+    private val baseURL = "http://192.168.0.107:8080/api"
 
     suspend fun getAllNotes() =
         client.get<GenericResponseWrapper<GetNotesResponseDTO>>("$baseURL/getNotes")

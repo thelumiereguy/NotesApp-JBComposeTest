@@ -7,3 +7,4 @@
 /desktop/build/
 /buildSrc/build/
 /.idea/
+/desktop/.gradle/
