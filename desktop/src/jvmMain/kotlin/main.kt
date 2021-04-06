@@ -1,18 +1,15 @@
 import androidx.compose.desktop.Window
+import androidx.compose.desktop.WindowEvents
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.ui.unit.IntSize
 import me.user.common.NotesApp
 import me.user.common.di.initKoin
 
-val koinContainer = initKoin().koin
 
+@ExperimentalFoundationApi
 fun main() = Window(
     size = IntSize(1280, 720),
-    onDismissRequest = {
-
-    }
 ) {
-    NotesApp(koinContainer.get(),
-        {
-
-        })
+    val koinContainer = initKoin().koin
+    NotesApp(koinContainer)
 }

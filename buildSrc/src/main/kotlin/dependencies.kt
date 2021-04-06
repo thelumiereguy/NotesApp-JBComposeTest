@@ -1,7 +1,7 @@
 object versions {
     const val krossbowVersion = "1.2.0"
 
-    const val coroutines = "1.4.3"
+    const val coroutines = "1.4.2"
 
     const val moko_mvvm = "0.9.2"
 

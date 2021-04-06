@@ -2,6 +2,8 @@ package me.user.common.feature.notes.data
 
 import me.user.common.feature.notes.data.models.Note
 import me.user.common.feature.notes.data.network.NotesAPI
+import java.text.SimpleDateFormat
+import java.util.*
 
 class NotesRepository(private val notesAPI: NotesAPI) {
 
@@ -14,8 +16,13 @@ class NotesRepository(private val notesAPI: NotesAPI) {
                 content,
                 createdBy,
                 createdOn,
+                formatDate(createdOn),
                 id
             )
         }
+    }
+
+    private fun formatDate(date: Long): String {
+        return SimpleDateFormat("dd MMMM", Locale.getDefault()).format(date)
     }
 }

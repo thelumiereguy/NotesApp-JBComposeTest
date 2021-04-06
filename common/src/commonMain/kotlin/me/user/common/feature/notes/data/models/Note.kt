@@ -5,19 +5,12 @@
 
 package me.user.common.feature.notes.data.models
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 
-@Serializable
 data class Note(
-    @SerialName("title")
     val title: String,
-    @SerialName("content")
     val content: String,
-    @SerialName("created_by")
     val created_by: String,
-    @SerialName("created_on")
     val created_on: Long,
-    @SerialName("id")
+    val createdOnText: String,
     val id: Long = 0,
 )
