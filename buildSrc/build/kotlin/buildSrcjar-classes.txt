@@ -1,1 +1,0 @@
-/home/piyushp/IdeaProjects/KMPTest2/buildSrc/build/classes/kotlin/main/dependencies.class:/home/piyushp/IdeaProjects/KMPTest2/buildSrc/build/classes/kotlin/main/versions.class
