@@ -54,6 +54,8 @@ kotlin {
                 api("io.insert-koin:koin-core:${versions.koin}")
                 api("io.insert-koin:koin-test:${versions.koin}")
 
+                api("moe.tlaster:precompose:${versions.precompose}")
+
                 // KTOR
                 implementation("io.ktor:ktor-client-core:${versions.ktor}")
                 implementation("io.ktor:ktor-client-json:${versions.ktor}")

@@ -20,8 +20,6 @@ object versions {
 
     const val coreKtx = "1.3.2"
 
-}
+    const val precompose = "0.1.1"
 
-object dependencies {
-    const val krossbowVersion = "1.1.5"
 }
