@@ -68,7 +68,7 @@ kotlin {
         }
         val androidTest by getting {
             dependencies {
-                implementation("junit:junit:4.13")
+                implementation("junit:junit:4.13.2")
             }
         }
         val desktopMain by getting {
@@ -88,4 +88,7 @@ android {
         minSdkVersion(21)
         targetSdkVersion(30)
     }
+}
+dependencies {
+    implementation("androidx.compose.ui:ui-tooling:1.0.0-beta02")
 }
