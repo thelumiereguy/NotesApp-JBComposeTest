@@ -14,7 +14,6 @@ repositories {
 
 dependencies {
     implementation(project(":common"))
-    api("org.hildan.krossbow:krossbow-websocket-okhttp:${versions.krossbowVersion}")
     implementation("io.insert-koin:koin-android:${versions.koin}")
     implementation("io.insert-koin:koin-androidx-compose:${versions.koinOld}")
 }
@@ -37,5 +36,9 @@ android {
         pickFirst("META-INF/kotlinx-io.kotlin_module")
         pickFirst("META-INF/atomicfu.kotlin_module")
         pickFirst("META-INF/kotlinx-coroutines-io.kotlin_module")
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 }

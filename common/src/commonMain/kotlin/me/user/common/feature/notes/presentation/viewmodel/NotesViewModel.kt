@@ -1,9 +1,12 @@
 package me.user.common.feature.notes.presentation.viewmodel
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import me.user.common.feature.notes.data.NotesRepository
+import kotlin.coroutines.coroutineContext
 
 class NotesViewModel(private val notesRepo: NotesRepository) {
     private val mutableState = MutableStateFlow<States>(States.Loading)
@@ -14,4 +17,16 @@ class NotesViewModel(private val notesRepo: NotesRepository) {
         delay(2000)
         mutableState.value = States.ShowNotes(notes)
     }
+
+    suspend fun observeChanges() {
+        notesRepo.observeChanges {
+
+            with(CoroutineScope(coroutineContext)) {
+                launch {
+                    getNotes()
+                }
+            }
+        }
+    }
+
 }

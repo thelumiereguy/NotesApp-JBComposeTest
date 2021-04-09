@@ -1,6 +1,7 @@
 package me.user.common
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
@@ -22,6 +23,8 @@ import me.user.common.feature.notes.data.models.Note
 import me.user.common.feature.notes.presentation.theme.SecondaryTextColor
 import me.user.common.feature.notes.presentation.viewmodel.NotesViewModel
 import me.user.common.feature.notes.presentation.viewmodel.States
+import moe.tlaster.precompose.navigation.NavHost
+import moe.tlaster.precompose.navigation.rememberNavigator
 import org.koin.core.Koin
 
 @ExperimentalFoundationApi
@@ -32,39 +35,55 @@ fun NotesApp(
     val coroutineScope = rememberCoroutineScope()
     val viewModel =
         remember {
-            koin.get<NotesViewModel>().also { coroutineScope.launch { it.getNotes() } }
+            koin.get<NotesViewModel>().also {
+                coroutineScope.launch { it.getNotes() }
+                coroutineScope.launch { it.observeChanges() }
+            }
         }
+
     val state by mutableStateOf(viewModel.state.collectAsState())
 
-    val currentState = state.value
+    val navigator = rememberNavigator()
 
     NotesTheme {
-        Scaffold(
-            backgroundColor = MaterialTheme.colors.surface
+        NavHost(
+            navigator = navigator,
+            initialRoute = "/home"
         ) {
-            Column(
-                Modifier.fillMaxWidth()
-                    .fillMaxHeight(),
-            ) {
-                Box(Modifier.padding(PaddingValues(12.dp, vertical = 8.dp))) {
-                    Text(
-                        "Notes",
-                        color = Color.White,
-                        fontWeight = FontWeight(900),
-                        fontSize = 24.sp
-                    )
-                }
-                when (currentState) {
-                    States.Loading -> {
-                        Box(
-                            contentAlignment = Alignment.Center,
-                            modifier = Modifier.fillMaxSize()
-                        ) {
-                            CircularProgressIndicator(modifier = Modifier.requiredSize(64.dp))
+            scene(route = "/home") {
+                Scaffold(
+                    backgroundColor = MaterialTheme.colors.surface
+                ) {
+                    Column(
+                        Modifier.fillMaxWidth()
+                            .fillMaxHeight(),
+                    ) {
+                        Box(Modifier.padding(PaddingValues(12.dp, vertical = 8.dp))) {
+                            Text(
+                                "Notes",
+                                color = Color.White,
+                                fontWeight = FontWeight(900),
+                                fontSize = 24.sp
+                            )
                         }
-                    }
-                    is States.ShowNotes -> {
-                        NotesFeed(currentState)
+
+                        val currentState = state.value
+
+                        when (currentState) {
+                            States.Loading -> {
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier.fillMaxSize()
+                                ) {
+                                    CircularProgressIndicator(modifier = Modifier.requiredSize(64.dp))
+                                }
+                            }
+                            is States.ShowNotes -> {
+                                NotesFeed(currentState.notes) {
+
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -74,23 +93,25 @@ fun NotesApp(
 
 @ExperimentalFoundationApi
 @Composable
-fun NotesFeed(value: States.ShowNotes) {
+fun NotesFeed(notesList: List<Note>, onItemSelected: (Note) -> Unit) {
     LazyVerticalGrid(
         cells = GridCells.Fixed(2),
     ) {
-        items(value.notes) {
-            NoteItem(it)
+        items(notesList) {
+            NoteItem(it, onItemSelected)
         }
     }
 }
 
 @Composable
-fun NoteItem(note: Note) {
+fun NoteItem(note: Note, onItemSelected: (Note) -> Unit) {
     Card(
-        modifier = Modifier.padding(8.dp).shadow(12.dp),
+        modifier = Modifier.padding(8.dp).shadow(12.dp).clickable(
+            onClick = { onItemSelected(note) }
+        ),
         shape = RoundedCornerShape(14.dp),
         backgroundColor = MaterialTheme.colors.primary,
-        elevation = 12.dp
+        elevation = 12.dp,
     ) {
         Column(
             Modifier.padding(8.dp)

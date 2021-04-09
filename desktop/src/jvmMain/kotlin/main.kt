@@ -7,7 +7,7 @@ import moe.tlaster.precompose.PreComposeWindow
 
 @ExperimentalFoundationApi
 fun main() = PreComposeWindow(
-    size = IntSize(1280, 720),
+    size = IntSize(800, 800),
 ) {
     val koinContainer = initKoin().koin
     NotesApp(koinContainer)

@@ -2,7 +2,7 @@ import org.jetbrains.compose.compose
 
 plugins {
     kotlin("multiplatform")
-    id("kotlinx-serialization")
+    kotlin("plugin.serialization") version "1.4.31"
     id("org.jetbrains.compose") version versions.jetBrainsCompose
     id("com.android.library")
     id("kotlin-android-extensions")
@@ -70,7 +70,7 @@ kotlin {
                 api("androidx.appcompat:appcompat:${versions.appCompat}")
                 api("androidx.activity:activity-compose:${versions.activityCompose}")
                 api("androidx.core:core-ktx:${versions.coreKtx}")
-
+                api("org.hildan.krossbow:krossbow-websocket-okhttp:${versions.krossbowVersion}")
                 // COROUTINE
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}")
 
