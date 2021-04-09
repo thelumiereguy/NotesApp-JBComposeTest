@@ -29,3 +29,5 @@ rootProject.name = "KMPTest2"
 include(":android")
 include(":desktop")
 include(":common")
+
+enableFeaturePreview("GRADLE_METADATA")

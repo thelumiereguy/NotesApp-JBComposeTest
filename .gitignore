@@ -8,3 +8,4 @@
 /buildSrc/build/
 /.idea/
 /desktop/.gradle/
+/buildSrc/.gradle/
