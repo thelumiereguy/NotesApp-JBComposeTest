@@ -1,3 +1,4 @@
+
 buildscript {
     repositories {
         gradlePluginPortal()
@@ -7,7 +8,8 @@ buildscript {
     }
     dependencies {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.31")
-        classpath("com.android.tools.build:gradle:4.0.1")
+        classpath("com.android.tools.build:gradle:4.1.3")
+        classpath("com.squareup.sqldelight:gradle-plugin:${versions.sqlDelight}")
     }
 }
 

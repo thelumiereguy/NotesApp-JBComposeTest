@@ -1,0 +1,13 @@
+CREATE TABLE Notes (
+id INTEGER NOT NULL PRIMARY KEY,
+title TEXT,
+content TEXT,
+created_by TEXT NOT NULL,
+created_on INTEGER NOT NULL
+);
+
+insertItem:
+INSERT OR REPLACE INTO Notes(id, title,content,created_by,created_on)VALUES(?,?,?,?,?);
+
+selectAll:
+SELECT * FROM Notes;

@@ -6,6 +6,7 @@ plugins {
     id("org.jetbrains.compose") version versions.jetBrainsCompose
     id("com.android.library")
     id("kotlin-android-extensions")
+    id("com.squareup.sqldelight")
 }
 
 group = "me.user"
@@ -51,6 +52,10 @@ kotlin {
                 implementation("io.ktor:ktor-client-logging:${versions.ktor}")
                 implementation("io.ktor:ktor-client-serialization:${versions.ktor}")
 
+                // SqlDelight
+                implementation("com.squareup.sqldelight:runtime:${versions.sqlDelight}")
+                implementation("com.squareup.sqldelight:coroutines-extensions:${versions.sqlDelight}")
+
             }
         }
         val commonTest by getting
@@ -64,6 +69,8 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}")
 
                 implementation("io.ktor:ktor-client-android:${versions.ktor}")
+
+                implementation("com.squareup.sqldelight:android-driver:${versions.sqlDelight}")
             }
         }
         val androidTest by getting {
@@ -75,9 +82,19 @@ kotlin {
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}")
                 implementation("io.ktor:ktor-client-apache:${versions.ktor}")
+
+                implementation("com.squareup.sqldelight:sqlite-driver:${versions.sqlDelight}")
+                implementation("org.xerial:sqlite-jdbc:${versions.sqliteJdbcDriver}")
             }
         }
         val desktopTest by getting
+    }
+}
+
+sqldelight {
+    database("NotesDatabase") {
+        packageName = "me.user.notes.db"
+        sourceFolders = listOf("sqldelight")
     }
 }
 
@@ -88,7 +105,8 @@ android {
         minSdkVersion(21)
         targetSdkVersion(30)
     }
-}
-dependencies {
-    implementation("androidx.compose.ui:ui-tooling:1.0.0-beta02")
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
 }

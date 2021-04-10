@@ -7,6 +7,7 @@ import kotlinx.coroutines.launch
 import me.user.common.feature.notes.data.models.Note
 import me.user.common.feature.notes.data.network.NotesAPI
 import me.user.common.feature.notes.data.network.model.NotesUpdateEventResponse
+import me.user.notes.db.NotesDatabase
 import org.hildan.krossbow.stomp.StompClient
 import org.hildan.krossbow.stomp.conversions.kxserialization.subscribe
 import org.hildan.krossbow.stomp.conversions.kxserialization.withJsonConversions
@@ -14,7 +15,13 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.coroutines.coroutineContext
 
-class NotesRepository(private val notesAPI: NotesAPI, private val client: StompClient) {
+class NotesRepository(
+    private val notesAPI: NotesAPI,
+    private val client: StompClient,
+    private val notesDatabase: NotesDatabase
+) {
+
+    private val notesQueries = notesDatabase?.notesQueries
 
     suspend fun getAllNotes(): List<Note> {
         val notes = notesAPI.getAllNotes()
@@ -35,7 +42,7 @@ class NotesRepository(private val notesAPI: NotesAPI, private val client: StompC
         return SimpleDateFormat("dd MMMM", Locale.getDefault()).format(date)
     }
 
-    suspend fun observeChanges(onUpdate:suspend () -> Unit) {
+    suspend fun observeChanges(onUpdate: suspend () -> Unit) {
         with(CoroutineScope(coroutineContext)) {
             launch {
                 val session = client.connect("ws://192.168.0.107:8080/ws")

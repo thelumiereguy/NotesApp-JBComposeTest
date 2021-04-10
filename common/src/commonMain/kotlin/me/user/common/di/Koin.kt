@@ -10,19 +10,20 @@ import me.user.common.feature.notes.data.network.NotesAPI
 import me.user.common.feature.notes.presentation.viewmodel.NotesViewModel
 import me.user.common.getStompClient
 import org.koin.core.context.startKoin
+import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.module
 
-fun initKoin(appDeclaration: KoinAppDeclaration = {}) =
+fun initKoin(appDeclaration: KoinAppDeclaration = {}, module: Module = module {  }) =
     startKoin {
         appDeclaration()
-        modules(commonModule())
+        modules(listOf(commonModule(), module))
     }
 
 fun commonModule() = module {
     single { Json { isLenient = true; ignoreUnknownKeys = true } }
     single { createHttpClient(get(), true) }
-    single { NotesRepository(get(), getStompClient()) }
+    single { NotesRepository(get(), getStompClient(), get()) }
     single { NotesViewModel(get()) }
     single { NotesAPI(get()) }
 }
