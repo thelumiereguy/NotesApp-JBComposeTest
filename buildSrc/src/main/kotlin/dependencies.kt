@@ -1,4 +1,6 @@
 object versions {
+    const val kotlinVersion = "1.4.31"
+
     const val krossbowVersion = "1.2.0"
 
     const val coroutines = "1.4.2"

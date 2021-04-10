@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import me.user.common.feature.notes.data.models.Note
+import me.user.common.feature.notes.data.network.IP
 import me.user.common.feature.notes.data.network.NotesAPI
 import me.user.common.feature.notes.data.network.model.NotesUpdateEventResponse
 import me.user.notes.db.NotesDatabase
@@ -45,7 +46,7 @@ class NotesRepository(
     suspend fun observeChanges(onUpdate: suspend () -> Unit) {
         with(CoroutineScope(coroutineContext)) {
             launch {
-                val session = client.connect("ws://192.168.0.107:8080/ws")
+                val session = client.connect("ws://$IP/ws")
                     .withJsonConversions()
 
 

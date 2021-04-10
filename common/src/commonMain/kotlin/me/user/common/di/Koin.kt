@@ -14,10 +14,10 @@ import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.module
 
-fun initKoin(appDeclaration: KoinAppDeclaration = {}, module: Module = module {  }) =
+fun initKoin(appDeclaration: KoinAppDeclaration = {}) =
     startKoin {
         appDeclaration()
-        modules(listOf(commonModule(), module))
+        modules(commonModule())
     }
 
 fun commonModule() = module {

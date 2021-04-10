@@ -2,7 +2,7 @@ import org.jetbrains.compose.compose
 
 plugins {
     kotlin("multiplatform")
-    kotlin("plugin.serialization") version "1.4.31"
+    kotlin("plugin.serialization") version versions.kotlinVersion
     id("org.jetbrains.compose") version versions.jetBrainsCompose
     id("com.android.library")
     id("kotlin-android-extensions")
