@@ -2,7 +2,6 @@ package me.user.common
 
 import android.content.Context
 import com.squareup.sqldelight.android.AndroidSqliteDriver
-import me.user.common.di.AndroidDependencies
 import me.user.common.di.IDependencyProvider
 import me.user.notes.db.NotesDatabase
 import org.hildan.krossbow.stomp.StompClient
@@ -23,3 +22,5 @@ internal actual fun getDbClient(dependencies: IDependencyProvider): NotesDatabas
     }
     return null
 }
+
+class AndroidDependencies(val context: Context) : IDependencyProvider
