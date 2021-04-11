@@ -1,4 +1,4 @@
-package me.user.common.feature.notes.presentation.theme
+package me.user.common.notes.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 

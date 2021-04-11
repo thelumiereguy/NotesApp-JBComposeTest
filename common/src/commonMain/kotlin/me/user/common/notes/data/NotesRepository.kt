@@ -1,13 +1,13 @@
-package me.user.common.feature.notes.data
+package me.user.common.notes.data
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import me.user.common.feature.notes.data.models.Note
-import me.user.common.feature.notes.data.network.IP
-import me.user.common.feature.notes.data.network.NotesAPI
-import me.user.common.feature.notes.data.network.model.NotesUpdateEventResponse
+import me.user.common.notes.data.models.Note
+import me.user.common.notes.data.network.IP
+import me.user.common.notes.data.network.NotesAPI
+import me.user.common.notes.data.network.model.NotesUpdateEventResponse
 import me.user.notes.db.NotesDatabase
 import org.hildan.krossbow.stomp.StompClient
 import org.hildan.krossbow.stomp.conversions.kxserialization.subscribe

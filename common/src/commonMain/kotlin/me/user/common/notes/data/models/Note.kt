@@ -3,7 +3,7 @@
  *  Copyright (c) 2021 People Interactive. All rights reserved.
  */
 
-package me.user.common.feature.notes.data.models
+package me.user.common.notes.data.models
 
 
 data class Note(

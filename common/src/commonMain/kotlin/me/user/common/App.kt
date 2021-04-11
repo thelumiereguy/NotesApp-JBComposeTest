@@ -16,10 +16,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
-import me.user.common.feature.notes.presentation.composeables.NotesFeed
-import me.user.common.feature.notes.presentation.theme.NotesTheme
-import me.user.common.feature.notes.presentation.viewmodel.NotesViewModel
-import me.user.common.feature.notes.presentation.viewmodel.States
+import me.user.common.notes.presentation.composeables.NotesFeed
+import me.user.common.notes.presentation.theme.NotesTheme
+import me.user.common.notes.presentation.viewmodel.NotesViewModel
+import me.user.common.notes.presentation.viewmodel.States
 import moe.tlaster.precompose.navigation.NavHost
 import moe.tlaster.precompose.navigation.rememberNavigator
 import org.koin.core.Koin

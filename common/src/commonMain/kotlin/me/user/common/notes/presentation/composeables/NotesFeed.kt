@@ -1,4 +1,4 @@
-package me.user.common.feature.notes.presentation.composeables
+package me.user.common.notes.presentation.composeables
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
@@ -20,7 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import me.user.common.feature.notes.data.models.Note
+import me.user.common.notes.data.models.Note
 
 @ExperimentalFoundationApi
 @Composable

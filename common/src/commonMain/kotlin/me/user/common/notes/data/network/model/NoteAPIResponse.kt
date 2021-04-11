@@ -3,7 +3,7 @@
  *  Copyright (c) 2021 People Interactive. All rights reserved.
  */
 
-package me.user.common.feature.notes.data.network.model
+package me.user.common.notes.data.network.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

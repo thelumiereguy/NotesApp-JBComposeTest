@@ -1,9 +1,9 @@
-package me.user.common.feature.notes.data.network
+package me.user.common.notes.data.network
 
 import io.ktor.client.*
 import io.ktor.client.request.*
-import me.user.common.feature.notes.data.network.model.GenericResponseWrapper
-import me.user.common.feature.notes.data.network.model.GetNotesResponseDTO
+import me.user.common.notes.data.network.model.GenericResponseWrapper
+import me.user.common.notes.data.network.model.GetNotesResponseDTO
 
 class NotesAPI(private val client: HttpClient) {
 

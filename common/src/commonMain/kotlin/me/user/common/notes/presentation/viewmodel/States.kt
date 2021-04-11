@@ -1,6 +1,6 @@
-package me.user.common.feature.notes.presentation.viewmodel
+package me.user.common.notes.presentation.viewmodel
 
-import me.user.common.feature.notes.data.models.Note
+import me.user.common.notes.data.models.Note
 
 sealed class States {
     object Loading : States()
