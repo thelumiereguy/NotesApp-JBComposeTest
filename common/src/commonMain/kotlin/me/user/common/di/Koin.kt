@@ -7,7 +7,7 @@ import io.ktor.client.features.logging.*
 import kotlinx.serialization.json.Json
 import me.user.common.notes.data.NotesRepository
 import me.user.common.notes.data.network.NotesAPI
-import me.user.common.notes.presentation.viewmodel.NotesViewModel
+import me.user.common.notes.presentation.viewmodel.feed.NotesViewModel
 import me.user.common.getStompClient
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration

@@ -1,4 +1,4 @@
-package me.user.common.notes.presentation.viewmodel
+package me.user.common.notes.presentation.viewmodel.feed
 
 import me.user.common.notes.data.models.Note
 

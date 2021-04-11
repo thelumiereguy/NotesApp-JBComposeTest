@@ -121,3 +121,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 }
+dependencies {
+    implementation("androidx.compose.material:material-icons-core:1.0.0-beta02")
+}

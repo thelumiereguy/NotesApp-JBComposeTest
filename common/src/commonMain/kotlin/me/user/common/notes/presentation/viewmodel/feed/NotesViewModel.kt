@@ -1,4 +1,4 @@
-package me.user.common.notes.presentation.viewmodel
+package me.user.common.notes.presentation.viewmodel.feed
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -30,3 +30,4 @@ class NotesViewModel(private val notesRepo: NotesRepository) {
     }
 
 }
+
