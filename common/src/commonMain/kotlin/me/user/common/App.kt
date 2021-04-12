@@ -2,8 +2,11 @@ package me.user.common
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme.colors
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -68,7 +71,7 @@ fun NotesApp(
                                 Icon(
                                     imageVector = FeatherIcons.ChevronLeft,
                                     contentDescription = null,
-                                    tint = MaterialTheme.colors.onPrimary,
+                                    tint = colors.onPrimary,
                                 )
                             }
 

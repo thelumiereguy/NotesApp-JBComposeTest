@@ -4,9 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.colors
@@ -15,6 +13,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -83,11 +82,8 @@ fun NotesFeed(
                 },
                 isFloatingActionButtonDocked = true,
                 floatingActionButtonPosition = FabPosition.End,
-            ) {
-                Column(
-                    Modifier.fillMaxWidth()
-                        .fillMaxHeight(),
-                ) {
+            ) { innerPadding ->
+                Column {
                     Box(
                         Modifier.padding(
                             PaddingValues(
@@ -104,24 +100,50 @@ fun NotesFeed(
                             fontSize = 24.sp
                         )
                     }
-                    NotesList(currentState.notes) {
-
-                    }
+                    NotesList(currentState.notes, innerPadding) {}
                 }
             }
         }
     }
 }
 
+fun LazyListState.isScrolledToTheEnd() =
+    layoutInfo.visibleItemsInfo.lastOrNull()?.index == layoutInfo.totalItemsCount - 1
 
 @ExperimentalFoundationApi
 @Composable
-fun NotesList(notesList: List<Note>, onItemSelected: (Note) -> Unit) {
-    LazyVerticalGrid(
-        cells = GridCells.Fixed(2),
-    ) {
-        items(notesList) {
-            NoteItem(it, onItemSelected)
+fun NotesList(
+    notesList: List<Note>,
+    paddingValues: PaddingValues,
+    onItemSelected: (Note) -> Unit
+) {
+    Box {
+        val scrollState = rememberLazyListState()
+
+        LazyVerticalGrid(
+            cells = GridCells.Fixed(2),
+            state = scrollState,
+            contentPadding = paddingValues
+        ) {
+            items(notesList) {
+                NoteItem(it, onItemSelected)
+            }
+        }
+
+        if (!scrollState.isScrolledToTheEnd()) {
+            Spacer(
+                Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Transparent,
+                                colors.surface
+                            )
+                        )
+                    ).align(Alignment.BottomCenter)
+            )
         }
     }
 }
@@ -134,35 +156,41 @@ fun NoteItem(note: Note, onItemSelected: (Note) -> Unit) {
             onClick = { onItemSelected(note) }
         ),
         shape = RoundedCornerShape(14.dp),
-        backgroundColor = MaterialTheme.colors.primary,
+        backgroundColor = colors.primary,
         elevation = 12.dp,
     ) {
-        Column(
-            Modifier.padding(8.dp)
+        Box(
+            modifier = Modifier.clickable(
+                onClick = { onItemSelected(note) }
+            ),
         ) {
-            Text(
-                note.title,
-                color = colors.onPrimary,
-                fontWeight = FontWeight(700),
-                fontSize = 18.sp
-            )
-
-            Text(
-                note.content,
-                modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
-                color = colors.onPrimary
-            )
-
-            Row(Modifier.fillMaxWidth()) {
-                Text(note.createdOnText, color = colors.onPrimary)
+            Column(
+                Modifier.padding(8.dp)
+            ) {
+                Text(
+                    note.title,
+                    color = colors.onPrimary,
+                    fontWeight = FontWeight(700),
+                    fontSize = 18.sp
+                )
 
                 Text(
-                    note.created_by,
-                    modifier = Modifier.padding(horizontal = 8.dp),
-                    color = colors.onPrimary,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1
+                    note.content,
+                    modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
+                    color = colors.onPrimary
                 )
+
+                Row(Modifier.fillMaxWidth()) {
+                    Text(note.createdOnText, color = colors.onPrimary)
+
+                    Text(
+                        note.created_by,
+                        modifier = Modifier.padding(horizontal = 8.dp),
+                        color = colors.onPrimary,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1
+                    )
+                }
             }
         }
     }
