@@ -2,12 +2,11 @@ package me.user.common
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.colors
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,7 +46,9 @@ fun NotesApp(
                 NotesFeed(viewModel, navigator::processEvents)
             }
 
-            scene(route = Routes.CREATE_NOTE.url) {
+            scene(
+                route = Routes.CREATE_NOTE.url
+            ) {
                 Scaffold(
                     backgroundColor = colors.surface,
                 ) {
@@ -81,6 +82,45 @@ fun NotesApp(
                                 fontWeight = FontWeight(900),
                                 fontSize = 24.sp
                             )
+                        }
+
+                        Card(
+                            shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
+                            backgroundColor = colors.surface,
+                            modifier = Modifier.fillMaxSize(),
+                        ) {
+                            Column(
+                                Modifier.padding(8.dp),
+                            ) {
+                                val mutableState = remember { mutableStateOf("Enter Title") }
+                                TextField(
+                                    mutableState.value,
+                                    onValueChange = {
+                                        mutableState.value = it
+                                    },
+                                    singleLine = true,
+                                )
+
+
+                                val contentState = remember { mutableStateOf("Enter Content") }
+                                TextField(
+                                    contentState.value,
+                                    onValueChange = {
+                                        contentState.value = it
+                                    },
+                                    modifier = Modifier.weight(1F)
+                                )
+
+                                Button(
+                                    content = {
+                                        Text("Create")
+                                    },
+                                    shape = RoundedCornerShape(8.dp),
+                                    onClick = {
+
+                                    }
+                                )
+                            }
                         }
                     }
                 }
