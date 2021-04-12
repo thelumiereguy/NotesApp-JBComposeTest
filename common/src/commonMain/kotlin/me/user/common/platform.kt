@@ -1,11 +1,7 @@
 package me.user.common
 
-import me.user.common.di.IDependencyProvider
-import me.user.notes.db.NotesDatabase
-import org.hildan.krossbow.stomp.StompClient
+import org.koin.core.module.Module
 
 expect fun getPlatformName(): String
 
-expect fun getStompClient(): StompClient
-
-internal expect fun getDbClient(dependencies: IDependencyProvider): NotesDatabase?
+internal expect fun platformModule(): Module

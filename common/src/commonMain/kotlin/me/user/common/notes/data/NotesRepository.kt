@@ -19,7 +19,7 @@ import kotlin.coroutines.coroutineContext
 class NotesRepository(
     private val notesAPI: NotesAPI,
     private val client: StompClient,
-    private val notesDatabase: NotesDatabase
+    private val notesDatabase: NotesDatabase?
 ) {
 
     private val notesQueries = notesDatabase?.notesQueries

@@ -8,7 +8,7 @@ import kotlinx.serialization.json.Json
 import me.user.common.notes.data.NotesRepository
 import me.user.common.notes.data.network.NotesAPI
 import me.user.common.notes.presentation.viewmodel.feed.NotesViewModel
-import me.user.common.getStompClient
+import me.user.common.platformModule
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.module
@@ -16,13 +16,13 @@ import org.koin.dsl.module
 fun initKoin(appDeclaration: KoinAppDeclaration = {}) =
     startKoin {
         appDeclaration()
-        modules(commonModule())
+        modules(commonModule(), platformModule())
     }
 
 fun commonModule() = module {
     single { Json { isLenient = true; ignoreUnknownKeys = true } }
     single { createHttpClient(get(), true) }
-    single { NotesRepository(get(), getStompClient(), get()) }
+    single { NotesRepository(get(), get(), get()) }
     single { NotesViewModel(get()) }
     single { NotesAPI(get()) }
 }

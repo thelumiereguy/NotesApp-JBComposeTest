@@ -1,18 +1,19 @@
 package me.user.common
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.colors
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import compose.icons.FeatherIcons
+import compose.icons.feathericons.ChevronLeft
 import me.user.common.notes.presentation.composeables.notesfeed.NotesFeed
 import me.user.common.notes.presentation.routes.NavigationActions
 import me.user.common.notes.presentation.routes.Routes
@@ -44,36 +45,41 @@ fun NotesApp(
             }
 
             scene(route = Routes.CREATE_NOTE.url) {
-
                 Scaffold(
-                    topBar = {
-                        TopAppBar(
-                            navigationIcon = {
-                                IconButton(onClick = {
-                                    navigator.processEvents(NavigationActions.PopBackStack)
-                                }) {
-                                    Icon(
-                                        imageVector = Icons.Filled.ArrowBack,
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colors.onPrimary,
-                                        modifier = Modifier.padding(start = 4.dp)
-                                    )
-                                }
-                            },
-                            title = {
-                                Text(
-                                    "Create Note",
-                                    color = Color.White,
-                                    fontWeight = FontWeight(900),
-                                    fontSize = 24.sp
-                                )
-                            },
-                            backgroundColor = colors.primary
-                        )
-                    },
-                    backgroundColor = colors.primary
+                    backgroundColor = colors.surface,
                 ) {
+                    Column(
+                        Modifier.fillMaxWidth()
+                            .fillMaxHeight(),
+                    ) {
+                        Row(
+                            Modifier.padding(
+                                PaddingValues(
+                                    top = 8.dp,
+                                    bottom = 8.dp,
+                                    start = 8.dp
+                                )
+                            ),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            IconButton(onClick = {
+                                navigator.processEvents(NavigationActions.PopBackStack)
+                            }) {
+                                Icon(
+                                    imageVector = FeatherIcons.ChevronLeft,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colors.onPrimary,
+                                )
+                            }
 
+                            Text(
+                                "Create Note",
+                                color = Color.White,
+                                fontWeight = FontWeight(900),
+                                fontSize = 24.sp
+                            )
+                        }
+                    }
                 }
             }
         }

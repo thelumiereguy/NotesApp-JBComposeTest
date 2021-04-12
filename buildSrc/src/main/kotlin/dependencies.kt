@@ -1,5 +1,5 @@
 object versions {
-    const val kotlinVersion = "1.4.31"
+    const val kotlinVersion = "1.4.32"
 
     const val krossbowVersion = "1.2.0"
 
@@ -14,7 +14,7 @@ object versions {
     const val koin = "3.0.1-beta-2"
     const val koinOld = "3.0.1-beta-1"
 
-    const val jetBrainsCompose = "0.4.0-build178"
+    const val jetBrainsCompose = "0.4.0-build180"
 
     const val appCompat = "1.2.0"
 

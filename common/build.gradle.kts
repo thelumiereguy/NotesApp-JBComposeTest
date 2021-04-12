@@ -67,6 +67,8 @@ kotlin {
                 implementation("com.squareup.sqldelight:runtime:${versions.sqlDelight}")
                 implementation("com.squareup.sqldelight:coroutines-extensions:${versions.sqlDelight}")
 
+                implementation("br.com.devsrsouza.compose.icons.jetbrains:feather:0.2.0")
+
             }
         }
         val commonTest by getting

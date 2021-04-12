@@ -88,7 +88,15 @@ fun NotesFeed(
                     Modifier.fillMaxWidth()
                         .fillMaxHeight(),
                 ) {
-                    Box(Modifier.padding(PaddingValues(12.dp, vertical = 8.dp))) {
+                    Box(
+                        Modifier.padding(
+                            PaddingValues(
+                                top = 16.dp,
+                                bottom = 8.dp,
+                                start = 16.dp
+                            )
+                        )
+                    ) {
                         Text(
                             "Notes",
                             color = Color.White,
