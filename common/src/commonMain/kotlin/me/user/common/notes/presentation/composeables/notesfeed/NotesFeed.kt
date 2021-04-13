@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import me.user.common.notes.data.models.Note
 import me.user.common.notes.presentation.routes.NavigationActions
-import me.user.common.notes.presentation.viewmodel.feed.NotesViewModel
-import me.user.common.notes.presentation.viewmodel.feed.States
+import me.user.common.notes.presentation.viewmodel.notesfeed.NotesViewModel
+import me.user.common.notes.presentation.viewmodel.notesfeed.States
 
 
 @ExperimentalFoundationApi
@@ -76,7 +76,7 @@ fun NotesFeed(
                         IconButton(onClick = {
                             navigationActions(NavigationActions.RouteToCreateNote)
                         }) {
-                            Icon(imageVector = Icons.Filled.Add, "", tint = Color.White)
+                            Icon(imageVector = Icons.Filled.Add, "", tint = colors.onPrimary)
                         }
                     }
                 },
@@ -95,7 +95,7 @@ fun NotesFeed(
                     ) {
                         Text(
                             "Notes",
-                            color = Color.White,
+                            color = colors.onPrimary,
                             fontWeight = FontWeight(900),
                             fontSize = 24.sp
                         )

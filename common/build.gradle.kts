@@ -17,17 +17,6 @@ repositories {
     mavenCentral()
 }
 
-android {
-    configurations {
-        create("androidTestApi")
-        create("androidTestDebugApi")
-        create("androidTestReleaseApi")
-        create("testApi")
-        create("testDebugApi")
-        create("testReleaseApi")
-    }
-}
-
 kotlin {
     android()
     jvm("desktop") {
@@ -122,7 +111,4 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-}
-dependencies {
-    implementation("androidx.compose.material:material-icons-core:1.0.0-beta02")
 }

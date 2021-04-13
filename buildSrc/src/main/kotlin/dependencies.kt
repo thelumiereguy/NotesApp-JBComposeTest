@@ -22,7 +22,7 @@ object versions {
 
     const val coreKtx = "1.3.2"
 
-    const val precompose = "0.1.1"
+    const val precompose = "0.1.2"
 
     const val sqlDelight = "1.4.4"
     const val sqliteJdbcDriver = "3.30.1"

@@ -1,4 +1,4 @@
-package me.user.common.notes.presentation.viewmodel.feed
+package me.user.common.notes.presentation.viewmodel.notesfeed
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
