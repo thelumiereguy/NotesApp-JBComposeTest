@@ -41,7 +41,7 @@ fun NotesFeed(
         coroutineScope.launch { observeChanges() }
     }
 
-    val state by mutableStateOf(viewModel.state.collectAsState())
+    val state = viewModel.state.collectAsState(States.Loading)
 
     when (val currentState = state.value) {
         States.Loading -> {

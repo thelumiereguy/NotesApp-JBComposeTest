@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import me.user.common.notes.data.NotesRepository
 import me.user.common.notes.data.models.Note
+import kotlin.random.Random
 
 class CreateNotesViewModel(private val notesRepo: NotesRepository) {
 
@@ -41,7 +42,7 @@ class CreateNotesViewModel(private val notesRepo: NotesRepository) {
         val title = titleTextState.value
         val content = contentTextState.value
         val author = "thelumiereguy"
-        val note = Note(title, content, author, System.currentTimeMillis(), 0)
+        val note = Note(title, content, author, System.currentTimeMillis(), Random.nextLong())
         notesRepo.createNote(note)
         handleLoadingState(false)
         onNoteCreated()
