@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class NotesUpdateEventResponse(
     @SerialName("new_note")
-    val new_note: NoteResponse,
+    val new_note: NoteDTO,
     @SerialName("type")
     val type: String
 )

@@ -12,10 +12,10 @@ import kotlinx.serialization.Serializable
 data class GenericResponseWrapper<T>(val data: T)
 
 @Serializable
-data class GetNotesResponseDTO(val notes: List<NoteResponse>)
+data class GetNotesResponseDTO(val notes: List<NoteDTO>)
 
 @Serializable
-data class NoteResponse(
+data class NoteDTO(
     @SerialName("title")
     val title: String,
     @SerialName("content")
@@ -26,4 +26,12 @@ data class NoteResponse(
     val created_on: Long,
     @SerialName("id")
     val id: Long = 0,
+)
+
+@Serializable
+data class UpdateResponseDTO(
+    @SerialName("message")
+    val message: String,
+    @SerialName("note")
+    val note: NoteDTO,
 )

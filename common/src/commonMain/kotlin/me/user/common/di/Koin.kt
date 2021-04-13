@@ -6,6 +6,7 @@ import io.ktor.client.features.json.serializer.*
 import io.ktor.client.features.logging.*
 import kotlinx.serialization.json.Json
 import me.user.common.notes.data.NotesRepository
+import me.user.common.notes.data.mapper.NoteMapper
 import me.user.common.notes.data.network.NotesAPI
 import me.user.common.notes.presentation.viewmodel.create_note.CreateNotesViewModel
 import me.user.common.notes.presentation.viewmodel.notesfeed.NotesViewModel
@@ -21,12 +22,13 @@ fun initKoin(appDeclaration: KoinAppDeclaration = {}) =
     }
 
 fun commonModule() = module {
-    single { Json { isLenient = true; ignoreUnknownKeys = true } }
-    single { createHttpClient(get(), true) }
-    single { NotesRepository(get(), get(), get()) }
-    single { NotesViewModel(get()) }
-    single { CreateNotesViewModel(get()) }
-    single { NotesAPI(get()) }
+    factory { Json { isLenient = true; ignoreUnknownKeys = true } }
+    factory { createHttpClient(get(), true) }
+    factory { NotesRepository(get(), get(), get(), get()) }
+    factory { NotesViewModel(get()) }
+    factory { CreateNotesViewModel(get()) }
+    factory { NotesAPI(get()) }
+    factory { NoteMapper() }
 }
 
 fun createHttpClient(json: Json, enableNetworkLogs: Boolean) = HttpClient {

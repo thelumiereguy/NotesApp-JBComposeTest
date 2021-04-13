@@ -4,22 +4,24 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import me.user.common.notes.data.mapper.NoteMapper
 import me.user.common.notes.data.models.Note
 import me.user.common.notes.data.network.IP
 import me.user.common.notes.data.network.NotesAPI
+import me.user.common.notes.data.network.model.NoteDTO
 import me.user.common.notes.data.network.model.NotesUpdateEventResponse
 import me.user.notes.db.NotesDatabase
 import org.hildan.krossbow.stomp.StompClient
 import org.hildan.krossbow.stomp.conversions.kxserialization.subscribe
 import org.hildan.krossbow.stomp.conversions.kxserialization.withJsonConversions
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.coroutines.coroutineContext
 
 class NotesRepository(
     private val notesAPI: NotesAPI,
     private val client: StompClient,
-    private val notesDatabase: NotesDatabase?
+    private val notesDatabase: NotesDatabase?,
+    private val noteMapper: NoteMapper
 ) {
 
     private val notesQueries = notesDatabase?.notesQueries
@@ -27,20 +29,8 @@ class NotesRepository(
     suspend fun getAllNotes(): List<Note> {
         val notes = notesAPI.getAllNotes()
         return notes.data.notes.map {
-            val (title, content, createdBy, createdOn, id) = it
-            Note(
-                title,
-                content,
-                createdBy,
-                createdOn,
-                formatDate(createdOn),
-                id
-            )
+            noteMapper.toDomainEntity(it)
         }
-    }
-
-    private fun formatDate(date: Long): String {
-        return SimpleDateFormat("dd MMMM", Locale.getDefault()).format(date)
     }
 
     suspend fun observeChanges(onUpdate: suspend () -> Unit) {
@@ -63,5 +53,11 @@ class NotesRepository(
                 }
             }
         }
+    }
+
+    suspend fun createNote(note: Note): Note {
+        val noteRequestModel = noteMapper.fromDomainEntity(note)
+        val noteResponse = notesAPI.createNote(noteRequestModel)
+        return noteMapper.toDomainEntity(noteResponse)
     }
 }
