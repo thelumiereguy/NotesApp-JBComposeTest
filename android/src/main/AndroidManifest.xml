@@ -7,7 +7,7 @@
         android:name=".NotesApplication"
         android:allowBackup="false"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        android:theme="@style/NotesTheme"
         android:usesCleartextTraffic="true">
         <activity
             android:name=".MainActivity"

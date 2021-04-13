@@ -84,43 +84,37 @@ fun NotesApp(
                             )
                         }
 
-                        Card(
-                            shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-                            backgroundColor = colors.surface,
-                            modifier = Modifier.fillMaxSize(),
+                        Column(
+                            Modifier.padding(8.dp),
                         ) {
-                            Column(
-                                Modifier.padding(8.dp),
-                            ) {
-                                val mutableState = remember { mutableStateOf("Enter Title") }
-                                TextField(
-                                    mutableState.value,
-                                    onValueChange = {
-                                        mutableState.value = it
-                                    },
-                                    singleLine = true,
-                                )
+                            val mutableState = remember { mutableStateOf("Enter Title") }
+                            TextField(
+                                mutableState.value,
+                                onValueChange = {
+                                    mutableState.value = it
+                                },
+                                singleLine = true,
+                            )
 
+                            val contentState = remember { mutableStateOf("Enter Content") }
 
-                                val contentState = remember { mutableStateOf("Enter Content") }
-                                TextField(
-                                    contentState.value,
-                                    onValueChange = {
-                                        contentState.value = it
-                                    },
-                                    modifier = Modifier.weight(1F)
-                                )
+                            TextField(
+                                contentState.value,
+                                onValueChange = {
+                                    contentState.value = it
+                                },
+                                modifier = Modifier.weight(1F)
+                            )
 
-                                Button(
-                                    content = {
-                                        Text("Create")
-                                    },
-                                    shape = RoundedCornerShape(8.dp),
-                                    onClick = {
+                            Button(
+                                content = {
+                                    Text("Create")
+                                },
+                                shape = RoundedCornerShape(8.dp),
+                                onClick = {
 
-                                    }
-                                )
-                            }
+                                }
+                            )
                         }
                     }
                 }

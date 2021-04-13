@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="NotesTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+        <item name="android:statusBarColor">#0D1A3E</item>
+        <item name="android:navigationBarColor">#0D1A3E</item>
+    </style>
+
+</resources>
