@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import me.user.common.notes.data.mapper.NoteMapper
 import me.user.common.notes.data.models.Note
-import me.user.common.notes.data.network.IP
+import me.user.common.notes.data.network.domain
 import me.user.common.notes.data.network.NotesAPI
 import me.user.common.notes.data.network.model.NotesUpdateEventResponse
 import me.user.notes.db.NotesDatabase
@@ -46,7 +46,7 @@ class NotesRepository(
     suspend fun observeChanges(onUpdate: suspend () -> Unit) {
         with(CoroutineScope(coroutineContext)) {
             launch {
-                val session = client.connect("ws://$IP/ws")
+                val session = client.connect("ws://$domain/ws")
                     .withJsonConversions()
 
 
