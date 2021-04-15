@@ -121,7 +121,7 @@ fun NotesList(
         val scrollState = rememberLazyListState()
 
         LazyVerticalGrid(
-            cells = GridCells.Fixed(2),
+            cells = GridCells.Adaptive(150.dp),
             state = scrollState,
             contentPadding = paddingValues
         ) {
@@ -145,6 +145,8 @@ fun NotesList(
                     ).align(Alignment.BottomCenter)
             )
         }
+//
+//        Test(notesList)
     }
 }
 
