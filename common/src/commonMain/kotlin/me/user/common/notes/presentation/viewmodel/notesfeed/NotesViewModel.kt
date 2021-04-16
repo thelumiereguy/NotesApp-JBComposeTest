@@ -10,7 +10,7 @@ import kotlin.coroutines.coroutineContext
 
 class NotesViewModel(private val notesRepo: NotesRepository) {
 
-    val state = getNotesFlow()
+    val screenState = getNotesFlow()
     private val coroutineScope: CoroutineScope = MainScope()
 
     init {
