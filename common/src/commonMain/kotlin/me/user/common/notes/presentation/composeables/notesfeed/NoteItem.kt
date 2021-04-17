@@ -24,12 +24,12 @@ import me.user.common.notes.data.models.Note
 @Composable
 fun NoteItem(
     note: Note,
-    noteItemActions: NoteItemActions
+    actions: NoteItemActions
 ) {
     Card(
         modifier = Modifier.padding(8.dp).combinedClickable(
-            onLongClick = { noteItemActions.onLongClick(note) },
-            onClick = { noteItemActions.onClick(note) }
+            onLongClick = { actions.onLongClick(note) },
+            onClick = { actions.onClick(note) }
         ),
         shape = RoundedCornerShape(14.dp),
         backgroundColor = MaterialTheme.colors.primary,

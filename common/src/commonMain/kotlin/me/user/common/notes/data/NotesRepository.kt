@@ -3,14 +3,13 @@ package me.user.common.notes.data
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import me.user.common.notes.data.mapper.NoteMapper
 import me.user.common.notes.data.models.Note
-import me.user.common.notes.data.network.domain
 import me.user.common.notes.data.network.NotesAPI
+import me.user.common.notes.data.network.domain
 import me.user.common.notes.data.network.model.NotesUpdateEventResponse
 import me.user.notes.db.NotesDatabase
 import org.hildan.krossbow.stomp.StompClient
@@ -37,10 +36,10 @@ class NotesRepository(
         }
     }
 
-    fun getAllNotesAsFlow(): Flow<List<Note>> {
+    fun getAllNotesAsFlow(): Flow<List<Note>>? {
         return notesQueries?.selectAll(mapper = { id, title, content, created_by, created_on ->
             Note(title, content, created_by, created_on, id)
-        })?.asFlow()?.mapToList() ?: flowOf(listOf())
+        })?.asFlow()?.flowOn(Dispatchers.Default)?.mapToList()
     }
 
     suspend fun observeChanges(onUpdate: suspend () -> Unit) {
@@ -72,5 +71,15 @@ class NotesRepository(
             notesQueries?.insertItem(id, title, content, created_by, created_on)
         }
         return noteMapper.toDomainEntity(noteResponse)
+    }
+
+    fun findNoteById(noteId: Long) = flow {
+        val note = notesQueries?.getNoteById(
+            noteId,
+            mapper = { id, title, content, created_by, created_on ->
+                Note(title, content, created_by, created_on, id)
+            })?.executeAsOneOrNull()
+
+        emit(note)
     }
 }

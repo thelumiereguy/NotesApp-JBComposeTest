@@ -14,8 +14,8 @@ repositories {
 
 dependencies {
     implementation(project(":common"))
-    implementation("io.insert-koin:koin-android:${versions.koin}")
-    implementation("io.insert-koin:koin-androidx-compose:${versions.koinOld}")
+    implementation("io.insert-koin:koin-android:3.0.1")
+    implementation("io.insert-koin:koin-androidx-compose:3.0.1")
 }
 
 android {

@@ -5,14 +5,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import me.user.common.notes.presentation.composeables.create_note.CreateNote
 import me.user.common.notes.presentation.composeables.notesfeed.NotesFeed
+import me.user.common.notes.presentation.composeables.update_note.UpdateNote
 import me.user.common.notes.presentation.routes.RouterActions
 import me.user.common.notes.presentation.routes.Routes
 import me.user.common.notes.presentation.theme.NotesTheme
 import me.user.common.notes.presentation.viewmodel.create_note.CreateNotesViewModel
 import me.user.common.notes.presentation.viewmodel.notesfeed.NotesViewModel
-import moe.tlaster.precompose.navigation.NavHost
-import moe.tlaster.precompose.navigation.Navigator
-import moe.tlaster.precompose.navigation.rememberNavigator
+import me.user.common.notes.presentation.viewmodel.update_note.UpdateNoteViewModel
+import moe.tlaster.precompose.navigation.*
 import moe.tlaster.precompose.navigation.route.scene
 import org.koin.core.Koin
 
@@ -44,6 +44,17 @@ fun NotesApp(
                 }
                 CreateNote(viewModel, navigator::processEvents)
             }
+
+            scene(
+                route = Routes.UPDATE_NOTE.url
+            ) {
+                it.path<Long>("id")?.let { noteId ->
+                    val viewModel = remember {
+                        koin.get<UpdateNoteViewModel>()
+                    }
+                    UpdateNote(noteId, viewModel, navigator::processEvents)
+                }
+            }
         }
     }
 }
@@ -54,8 +65,8 @@ fun Navigator.processEvents(routerActions: RouterActions) {
         RouterActions.RouteToCreateNote -> navigate(
             Routes.CREATE_NOTE.url
         )
-        is RouterActions.ShowOptionsDialog -> {
-            navigate(routerActions.url)
+        is RouterActions.ShowUpdateNoteScreen -> {
+            navigate("/update/${routerActions.noteId}") // See Routes.UPDATE_NOTE.url
         }
     }
 }

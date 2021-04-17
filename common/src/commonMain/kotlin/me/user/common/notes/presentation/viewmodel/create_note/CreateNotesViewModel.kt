@@ -42,7 +42,7 @@ class CreateNotesViewModel(private val notesRepo: NotesRepository) {
         val title = titleTextState.value
         val content = contentTextState.value
         val author = "thelumiereguy"
-        val note = Note(title, content, author, System.currentTimeMillis(), Random.nextLong())
+        val note = Note(title, content, author, System.currentTimeMillis(), Random.nextInt().toLong())
         notesRepo.createNote(note)
         handleLoadingState(false)
         onNoteCreated()

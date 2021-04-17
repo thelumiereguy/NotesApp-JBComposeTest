@@ -1,15 +1,25 @@
 package me.user.common.notes.presentation.composeables.notesfeed
 
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.TweenSpec
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -40,69 +50,72 @@ fun NotesFeed(
 
     val state = viewModel.screenState.collectAsState(States.Loading)
 
-    val dropDownState = remember { mutableStateOf(false) }
+    Crossfade(
+        state.value,
+        animationSpec = TweenSpec(1000),
+    ) { currentState ->
+        when (currentState) {
+            States.Loading -> {
+                Loading(colors)
+            }
+            is States.ShowNotes -> {
+                Scaffold(
+                    backgroundColor = colors.surface,
+                    bottomBar = {
+                        BottomAppBar(
+                            cutoutShape = fabShape,
+                            elevation = 8.dp,
+                            backgroundColor = colors.primary
+                        ) {
 
-    when (val currentState = state.value) {
-        States.Loading -> {
-            Loading(colors)
-        }
-        is States.ShowNotes -> {
-            Scaffold(
-                backgroundColor = colors.surface,
-                bottomBar = {
-                    BottomAppBar(
-                        cutoutShape = fabShape,
-                        elevation = 8.dp,
-                        backgroundColor = colors.primary
-                    ) {
-
-                    }
-                },
-                floatingActionButton = {
-                    FloatingActionButton(
-                        onClick = {},
-                        shape = fabShape,
-                        backgroundColor = colors.secondary
-                    ) {
-                        IconButton(onClick = {
-                            navigationActions(RouterActions.RouteToCreateNote)
-                        }) {
-                            Icon(imageVector = Icons.Filled.Add, "", tint = colors.onPrimary)
                         }
-                    }
-                },
-                isFloatingActionButtonDocked = true,
-                floatingActionButtonPosition = FabPosition.End,
-            ) { innerPadding ->
-                Column {
-                    Box(
-                        Modifier.padding(
-                            PaddingValues(
-                                top = 16.dp,
-                                bottom = 8.dp,
-                                start = 16.dp
+                    },
+                    floatingActionButton = {
+                        FloatingActionButton(
+                            onClick = {},
+                            shape = fabShape,
+                            backgroundColor = colors.secondary
+                        ) {
+                            IconButton(onClick = {
+                                navigationActions(RouterActions.RouteToCreateNote)
+                            }) {
+                                Icon(imageVector = Icons.Filled.Add, "", tint = colors.onPrimary)
+                            }
+                        }
+                    },
+                    isFloatingActionButtonDocked = true,
+                    floatingActionButtonPosition = FabPosition.End,
+                ) { innerPadding ->
+                    Column {
+                        Box(
+                            Modifier.padding(
+                                PaddingValues(
+                                    top = 16.dp,
+                                    bottom = 8.dp,
+                                    start = 16.dp
+                                )
+                            )
+                        ) {
+                            Text(
+                                "Notes",
+                                color = colors.onPrimary,
+                                fontWeight = FontWeight(900),
+                                fontSize = 24.sp
+                            )
+                        }
+                        NotesList(
+                            currentState.notes,
+                            innerPadding,
+                            actions = NoteItemActions(
+                                onClick = {
+                                    navigationActions(RouterActions.ShowUpdateNoteScreen(it.id))
+                                },
+                                onLongClick = {
+
+                                }
                             )
                         )
-                    ) {
-                        Text(
-                            "Notes",
-                            color = colors.onPrimary,
-                            fontWeight = FontWeight(900),
-                            fontSize = 24.sp
-                        )
                     }
-                    NotesList(
-                        currentState.notes,
-                        innerPadding,
-                        NoteItemActions(
-                            onClick = {
-
-                            },
-                            onLongClick = {
-
-                            }
-                        )
-                    )
                 }
             }
         }
@@ -114,18 +127,17 @@ fun NotesFeed(
 fun NotesList(
     notesList: List<Note>,
     paddingValues: PaddingValues,
-    noteItemActions: NoteItemActions
+    actions: NoteItemActions
 ) {
     Box {
         val scrollState = rememberLazyListState()
 
-        LazyVerticalGrid(
-            cells = GridCells.Adaptive(150.dp),
+        LazyColumn(
             state = scrollState,
             contentPadding = paddingValues
         ) {
             items(notesList) {
-                NoteItem(it, noteItemActions)
+                NoteItem(it, actions)
             }
         }
 

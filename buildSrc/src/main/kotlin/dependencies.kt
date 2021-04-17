@@ -11,8 +11,7 @@ object versions {
 
     const val ktor = "1.5.2"
 
-    const val koin = "3.0.1-beta-2"
-    const val koinOld = "3.0.1-beta-1"
+    const val koin = "3.0.1"
 
     const val jetBrainsCompose = "0.4.0-build180"
 
@@ -22,7 +21,7 @@ object versions {
 
     const val coreKtx = "1.3.2"
 
-    const val precompose = "0.1.2"
+    const val precompose = "0.1.3"
 
     const val sqlDelight = "1.4.4"
     const val sqliteJdbcDriver = "3.30.1"

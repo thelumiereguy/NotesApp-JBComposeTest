@@ -18,7 +18,11 @@ repositories {
 }
 
 kotlin {
-    android()
+    android {
+        compilations.all {
+            kotlinOptions.jvmTarget = "11"
+        }
+    }
     jvm("desktop") {
         compilations.all {
             kotlinOptions.jvmTarget = "11"
@@ -43,6 +47,8 @@ kotlin {
 //                // KOIN
                 api("io.insert-koin:koin-core:${versions.koin}")
                 api("io.insert-koin:koin-test:${versions.koin}")
+                api("io.insert-koin:koin-core-ext:${versions.koin}")
+                api("io.insert-koin:koin-androidx-compose:${versions.koin}")
 
                 api("moe.tlaster:precompose:${versions.precompose}")
 
@@ -106,9 +112,5 @@ android {
     defaultConfig {
         minSdkVersion(21)
         targetSdkVersion(30)
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
     }
 }

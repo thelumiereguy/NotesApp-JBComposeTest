@@ -11,3 +11,6 @@ INSERT OR REPLACE INTO Notes(id, title,content,created_by,created_on)VALUES(?,?,
 
 selectAll:
 SELECT * FROM Notes ORDER BY created_on DESC;
+
+getNoteById:
+SELECT * FROM Notes alias WHERE id = ? LIMIT 1;
