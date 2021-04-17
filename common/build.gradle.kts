@@ -47,8 +47,6 @@ kotlin {
 //                // KOIN
                 api("io.insert-koin:koin-core:${versions.koin}")
                 api("io.insert-koin:koin-test:${versions.koin}")
-                api("io.insert-koin:koin-core-ext:${versions.koin}")
-                api("io.insert-koin:koin-androidx-compose:${versions.koin}")
 
                 api("moe.tlaster:precompose:${versions.precompose}")
 
@@ -63,6 +61,7 @@ kotlin {
                 implementation("com.squareup.sqldelight:coroutines-extensions:${versions.sqlDelight}")
 
                 implementation("br.com.devsrsouza.compose.icons.jetbrains:feather:0.2.0")
+                implementation("br.com.devsrsouza.compose.icons.jetbrains:font-awesome:0.2.0")
 
             }
         }

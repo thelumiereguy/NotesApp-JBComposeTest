@@ -12,7 +12,10 @@ import me.user.common.notes.presentation.theme.NotesTheme
 import me.user.common.notes.presentation.viewmodel.create_note.CreateNotesViewModel
 import me.user.common.notes.presentation.viewmodel.notesfeed.NotesViewModel
 import me.user.common.notes.presentation.viewmodel.update_note.UpdateNoteViewModel
-import moe.tlaster.precompose.navigation.*
+import moe.tlaster.precompose.navigation.NavHost
+import moe.tlaster.precompose.navigation.Navigator
+import moe.tlaster.precompose.navigation.path
+import moe.tlaster.precompose.navigation.rememberNavigator
 import moe.tlaster.precompose.navigation.route.scene
 import org.koin.core.Koin
 

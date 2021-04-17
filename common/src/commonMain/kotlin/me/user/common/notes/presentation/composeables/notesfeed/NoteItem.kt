@@ -27,15 +27,15 @@ fun NoteItem(
     actions: NoteItemActions
 ) {
     Card(
-        modifier = Modifier.padding(8.dp).combinedClickable(
-            onLongClick = { actions.onLongClick(note) },
-            onClick = { actions.onClick(note) }
-        ),
+        modifier = Modifier.padding(8.dp),
         shape = RoundedCornerShape(14.dp),
         backgroundColor = MaterialTheme.colors.primary,
         elevation = 12.dp,
     ) {
-        Box {
+        Box(modifier = Modifier.combinedClickable(
+            onLongClick = { actions.onLongClick(note) },
+            onClick = { actions.onClick(note) }
+        )) {
             Column(
                 Modifier.padding(8.dp)
             ) {

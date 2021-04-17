@@ -12,7 +12,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import compose.icons.FeatherIcons
+import compose.icons.FontAwesomeIcons
 import compose.icons.feathericons.ChevronLeft
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.EllipsisV
+import compose.icons.fontawesomeicons.solid.Redo
+import compose.icons.fontawesomeicons.solid.Undo
 import kotlinx.coroutines.launch
 import me.user.common.notes.presentation.composeables.create_note.NoteTextField
 import me.user.common.notes.presentation.composeables.notesfeed.Loading
@@ -26,7 +31,7 @@ import me.user.common.notes.presentation.viewmodel.update_note.UpdateNoteViewMod
 fun UpdateNote(
     noteId: Long,
     updateNoteViewModel: UpdateNoteViewModel,
-    navigationActions: (RouterActions) -> Unit
+    routerActions: (RouterActions) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -38,7 +43,7 @@ fun UpdateNote(
 
     val state = updateNoteViewModel.screenState.collectAsState()
 
-    when (val currentState = state.value) {
+    when (state.value) {
         States.Loading -> {
             Loading(MaterialTheme.colors)
         }
@@ -57,11 +62,12 @@ fun UpdateNote(
                                     top = 8.dp,
                                     start = 8.dp
                                 )
-                            ),
-                            verticalAlignment = Alignment.CenterVertically
+                            ).fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             IconButton(onClick = {
-                                navigationActions(RouterActions.PopBackStack)
+                                routerActions(RouterActions.PopBackStack)
                             }) {
                                 Icon(
                                     imageVector = FeatherIcons.ChevronLeft,
@@ -76,6 +82,10 @@ fun UpdateNote(
                                 fontWeight = FontWeight.Black,
                                 fontSize = 24.sp
                             )
+
+                            Box {
+                                ToolbarIcons(routerActions, updateNoteViewModel)
+                            }
                         }
 
                         Column(
@@ -132,7 +142,7 @@ fun UpdateNote(
                                 onClick = {
                                     coroutineScope.launch {
                                         updateNoteViewModel.saveNote {
-                                            navigationActions(RouterActions.PopBackStack)
+                                            routerActions(RouterActions.PopBackStack)
                                         }
                                     }
                                 }
@@ -141,6 +151,46 @@ fun UpdateNote(
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun ToolbarIcons(routerActions: (RouterActions) -> Unit, updateNoteViewModel: UpdateNoteViewModel) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        IconButton(onClick = {
+            routerActions(RouterActions.PopBackStack)
+        }, modifier = Modifier) {
+            Icon(
+                imageVector = FontAwesomeIcons.Solid.Undo,
+                contentDescription = null,
+                tint = MaterialTheme.colors.onPrimary,
+                modifier = Modifier.size(16.dp)
+            )
+        }
+
+        IconButton(onClick = {
+            routerActions(RouterActions.PopBackStack)
+        }, modifier = Modifier) {
+            Icon(
+                imageVector = FontAwesomeIcons.Solid.Redo,
+                contentDescription = null,
+                tint = MaterialTheme.colors.onPrimary,
+                modifier = Modifier.size(16.dp)
+            )
+        }
+
+        IconButton(onClick = {
+            routerActions(RouterActions.PopBackStack)
+        }, modifier = Modifier) {
+            Icon(
+                imageVector = FontAwesomeIcons.Solid.EllipsisV,
+                contentDescription = null,
+                tint = MaterialTheme.colors.onPrimary,
+                modifier = Modifier.size(16.dp)
+            )
         }
     }
 }

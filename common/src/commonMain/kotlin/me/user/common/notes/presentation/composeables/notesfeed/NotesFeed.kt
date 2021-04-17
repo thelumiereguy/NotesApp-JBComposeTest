@@ -52,7 +52,6 @@ fun NotesFeed(
 
     Crossfade(
         state.value,
-        animationSpec = TweenSpec(1000),
     ) { currentState ->
         when (currentState) {
             States.Loading -> {
