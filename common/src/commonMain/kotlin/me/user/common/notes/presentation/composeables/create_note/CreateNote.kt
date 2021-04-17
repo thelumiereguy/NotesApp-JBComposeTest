@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.sp
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.ChevronLeft
 import kotlinx.coroutines.launch
-import me.user.common.notes.presentation.routes.NavigationActions
+import me.user.common.notes.presentation.routes.RouterActions
 import me.user.common.notes.presentation.viewmodel.create_note.ButtonState
 import me.user.common.notes.presentation.viewmodel.create_note.CreateNotesViewModel
 
@@ -25,7 +25,7 @@ import me.user.common.notes.presentation.viewmodel.create_note.CreateNotesViewMo
 @Composable
 fun CreateNote(
     createViewModel: CreateNotesViewModel,
-    navigationActions: (NavigationActions) -> Unit
+    navigationActions: (RouterActions) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -47,7 +47,7 @@ fun CreateNote(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     IconButton(onClick = {
-                        navigationActions(NavigationActions.PopBackStack)
+                        navigationActions(RouterActions.PopBackStack)
                     }) {
                         Icon(
                             imageVector = FeatherIcons.ChevronLeft,
@@ -118,7 +118,7 @@ fun CreateNote(
                         onClick = {
                             coroutineScope.launch {
                                 createViewModel.createNote {
-                                    navigationActions(NavigationActions.PopBackStack)
+                                    navigationActions(RouterActions.PopBackStack)
                                 }
                             }
                         }

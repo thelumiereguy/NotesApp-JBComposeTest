@@ -2,7 +2,6 @@ package me.user.common.notes.presentation.composeables.notesfeed
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,21 +15,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import me.user.common.notes.data.models.Note
-import me.user.common.notes.presentation.routes.NavigationActions
+import me.user.common.notes.presentation.routes.RouterActions
 import me.user.common.notes.presentation.viewmodel.notesfeed.NotesViewModel
 import me.user.common.notes.presentation.viewmodel.notesfeed.States
-
 
 @ExperimentalFoundationApi
 @Composable
 fun NotesFeed(
     viewModel: NotesViewModel,
-    navigationActions: (NavigationActions) -> Unit
+    navigationActions: (RouterActions) -> Unit
 ) {
     val fabShape = RoundedCornerShape(50)
 
@@ -43,17 +40,11 @@ fun NotesFeed(
 
     val state = viewModel.screenState.collectAsState(States.Loading)
 
+    val dropDownState = remember { mutableStateOf(false) }
+
     when (val currentState = state.value) {
         States.Loading -> {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier.fillMaxSize().background(colors.surface),
-            ) {
-                CircularProgressIndicator(
-                    modifier = Modifier.requiredSize(64.dp),
-                    color = colors.secondary
-                )
-            }
+            Loading(colors)
         }
         is States.ShowNotes -> {
             Scaffold(
@@ -74,7 +65,7 @@ fun NotesFeed(
                         backgroundColor = colors.secondary
                     ) {
                         IconButton(onClick = {
-                            navigationActions(NavigationActions.RouteToCreateNote)
+                            navigationActions(RouterActions.RouteToCreateNote)
                         }) {
                             Icon(imageVector = Icons.Filled.Add, "", tint = colors.onPrimary)
                         }
@@ -100,22 +91,30 @@ fun NotesFeed(
                             fontSize = 24.sp
                         )
                     }
-                    NotesList(currentState.notes, innerPadding) {}
+                    NotesList(
+                        currentState.notes,
+                        innerPadding,
+                        NoteItemActions(
+                            onClick = {
+
+                            },
+                            onLongClick = {
+
+                            }
+                        )
+                    )
                 }
             }
         }
     }
 }
 
-fun LazyListState.isScrolledToTheEnd() =
-    layoutInfo.visibleItemsInfo.lastOrNull()?.index == layoutInfo.totalItemsCount - 1
-
 @ExperimentalFoundationApi
 @Composable
 fun NotesList(
     notesList: List<Note>,
     paddingValues: PaddingValues,
-    onItemSelected: (Note) -> Unit
+    noteItemActions: NoteItemActions
 ) {
     Box {
         val scrollState = rememberLazyListState()
@@ -126,7 +125,7 @@ fun NotesList(
             contentPadding = paddingValues
         ) {
             items(notesList) {
-                NoteItem(it, onItemSelected)
+                NoteItem(it, noteItemActions)
             }
         }
 
@@ -148,50 +147,5 @@ fun NotesList(
     }
 }
 
-
-@Composable
-fun NoteItem(note: Note, onItemSelected: (Note) -> Unit) {
-    Card(
-        modifier = Modifier.padding(8.dp).clickable(
-            onClick = { onItemSelected(note) }
-        ),
-        shape = RoundedCornerShape(14.dp),
-        backgroundColor = colors.primary,
-        elevation = 12.dp,
-    ) {
-        Box(
-            modifier = Modifier.clickable(
-                onClick = { onItemSelected(note) }
-            ),
-        ) {
-            Column(
-                Modifier.padding(8.dp)
-            ) {
-                Text(
-                    note.title,
-                    color = colors.onPrimary,
-                    fontWeight = FontWeight(700),
-                    fontSize = 18.sp
-                )
-
-                Text(
-                    note.content,
-                    modifier = Modifier.padding(top = 8.dp, bottom = 16.dp),
-                    color = colors.onPrimary
-                )
-
-                Row(Modifier.fillMaxWidth()) {
-                    Text(note.createdOnText, color = colors.onPrimary)
-
-                    Text(
-                        note.created_by,
-                        modifier = Modifier.padding(horizontal = 8.dp),
-                        color = colors.onPrimary,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1
-                    )
-                }
-            }
-        }
-    }
-}
+fun LazyListState.isScrolledToTheEnd() =
+    layoutInfo.visibleItemsInfo.lastOrNull()?.index == layoutInfo.totalItemsCount - 1
