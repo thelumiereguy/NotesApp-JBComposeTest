@@ -10,16 +10,12 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import me.user.common.notes.data.NotesRepository
 import me.user.common.notes.data.models.Note
 import me.user.common.runTest
-import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.core.Is
-import org.junit.Assert
 import kotlin.test.*
 
 @ExperimentalCoroutinesApi
@@ -39,7 +35,7 @@ internal class UpdateNoteViewModelTest {
 
     @Test
     fun `initial State should be loading`() {
-        Assert.assertThat(updateNoteViewModel.screenState.value, Is(equalTo(States.Loading)))
+        assertEquals(States.Loading, updateNoteViewModel.screenState.value)
     }
 
     @Test
@@ -92,8 +88,70 @@ internal class UpdateNoteViewModelTest {
             updateNoteViewModel.observeUndoRedoState()
         }
 
-        updateNoteViewModel.onContentChanged("content")
+        updateNoteViewModel.onContentChanged("newContent")
 
         assertTrue(updateNoteViewModel.undoRedoButtonState.first().undoEnabled)
+        assertFalse(updateNoteViewModel.undoRedoButtonState.first().redoEnabled)
+    }
+
+    @Test
+    fun `when clicking undo, the note content should be reset`() = runTest {
+
+
+        val note = Note("title", "content", "", System.currentTimeMillis(), 0)
+
+        // Return Note with empty title and body
+        coEvery {
+            mockNotesRepository.findNoteById(0)
+        } returns flowOf(note)
+
+        updateNoteViewModel.getNoteById(0)
+
+        GlobalScope.launch {
+            updateNoteViewModel.observeUndoRedoState()
+
+            updateNoteViewModel.onContentChanged("newContent")
+
+            updateNoteViewModel.undoClicked()
+
+            assertEquals("content", updateNoteViewModel.contentTextState.value)
+
+            assertFalse(updateNoteViewModel.undoRedoButtonState.first().undoEnabled)
+
+            assertTrue(updateNoteViewModel.undoRedoButtonState.first().redoEnabled)
+        }
+    }
+
+
+    @Test
+    fun `when clicking redo, the note content should be updated`() = runTest {
+
+
+        val note = Note("title", "content", "", System.currentTimeMillis(), 0)
+
+        // Return Note with empty title and body
+        coEvery {
+            mockNotesRepository.findNoteById(0)
+        } returns flowOf(note)
+
+        updateNoteViewModel.getNoteById(0)
+
+        GlobalScope.launch {
+            updateNoteViewModel.observeUndoRedoState()
+
+            updateNoteViewModel.onContentChanged("newContent")
+
+            updateNoteViewModel.undoClicked()
+
+            assertEquals("content", updateNoteViewModel.contentTextState.value)
+
+            updateNoteViewModel.redoClicked()
+
+            assertEquals("newContent", updateNoteViewModel.contentTextState.value)
+
+            assertFalse(updateNoteViewModel.undoRedoButtonState.first().undoEnabled)
+
+            assertFalse(updateNoteViewModel.undoRedoButtonState.first().redoEnabled)
+        }
     }
 }

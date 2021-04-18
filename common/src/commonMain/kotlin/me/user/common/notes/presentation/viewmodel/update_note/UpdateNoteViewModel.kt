@@ -56,14 +56,27 @@ class UpdateNoteViewModel(
 
     suspend fun observeUndoRedoState() {
         events.debounce(300L).distinctUntilChanged().collect { newContent ->
-            println(newContent)
             undoRedoHandler.onEvent(newContent)
         }
+
+        undoRedoHandler.contentFlow.collect { content ->
+            textFieldState.onContentChanged(content)
+        }
+
     }
 
+
     override fun onContentChanged(content: String) {
+        events.value = contentTextState.value
         textFieldState.onContentChanged(content)
-        events.value = content
+    }
+
+    suspend fun undoClicked() {
+        undoRedoHandler.onUndoClicked()
+    }
+
+    suspend fun redoClicked() {
+        undoRedoHandler.onRedoClicked()
     }
 
 

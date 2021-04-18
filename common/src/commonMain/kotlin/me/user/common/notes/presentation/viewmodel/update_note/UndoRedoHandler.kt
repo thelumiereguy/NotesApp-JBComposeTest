@@ -17,6 +17,8 @@ class UndoRedoHandler {
     private val _undoRedoVisibilityFlow = MutableSharedFlow<UndoRedoButtonState>()
     val undoRedoVisibilityFlow: SharedFlow<UndoRedoButtonState> = _undoRedoVisibilityFlow
 
+    private val _contentFlow = MutableSharedFlow<String>()
+    val contentFlow: SharedFlow<String> = _contentFlow
 
     /**
      * Events from Keyboard are added to UndoStack
@@ -31,14 +33,21 @@ class UndoRedoHandler {
      * When pressed undo, 1 event will be popped and then pushed into RedoStack
      */
     suspend fun onUndoClicked() {
-
+        if (undoStack.isNotEmpty()) {
+            val previousContent = undoStack.pop()
+            _contentFlow.emit(previousContent)
+        }
     }
 
     /**
      * When pressed redo, 1 event will be popped and then pushed back into UndoStack
      */
-    fun onRedoClicked() {
-
+    suspend fun onRedoClicked() {
+        if (undoStack.isNotEmpty()) {
+            val updatedContent = undoStack.pop()
+            redoStack.add(updatedContent)
+            _contentFlow.emit(updatedContent)
+        }
     }
 
 
