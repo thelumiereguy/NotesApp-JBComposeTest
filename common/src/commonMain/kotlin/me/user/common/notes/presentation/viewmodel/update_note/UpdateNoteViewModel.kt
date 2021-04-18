@@ -1,9 +1,6 @@
 package me.user.common.notes.presentation.viewmodel.update_note
 
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.*
 import me.user.common.notes.data.NotesRepository
 import me.user.common.notes.presentation.viewmodel.ITextFieldStateProvider
 import me.user.common.notes.presentation.viewmodel.TextFieldStateProvider
@@ -11,13 +8,16 @@ import me.user.common.notes.presentation.viewmodel.create_note.ButtonState
 
 class UpdateNoteViewModel(
     private val notesRepo: NotesRepository,
-    textFieldState: ITextFieldStateProvider = TextFieldStateProvider()
+    private val undoRedoHandler: UndoRedoHandler,
+    private val textFieldState: ITextFieldStateProvider = TextFieldStateProvider()
 ) : ITextFieldStateProvider by textFieldState {
 
     private val _screenState: MutableStateFlow<States> = MutableStateFlow(States.Loading)
     val screenState: StateFlow<States> = _screenState
 
     private val _buttonLoadingState = MutableStateFlow(false)
+
+    val undoRedoButtonState = undoRedoHandler.undoRedoVisibilityFlow
 
     val saveButtonState =
         combine(
@@ -51,4 +51,33 @@ class UpdateNoteViewModel(
         _buttonLoadingState.value = loading
     }
 
+    private val events: MutableStateFlow<String> =
+        MutableStateFlow("")
+
+    suspend fun observeUndoRedoState() {
+        events.debounce(300L).distinctUntilChanged().collect { newContent ->
+            println(newContent)
+            undoRedoHandler.onEvent(newContent)
+        }
+    }
+
+    override fun onContentChanged(content: String) {
+        textFieldState.onContentChanged(content)
+        events.value = content
+    }
+
+
+//    private fun updateNote(updatedNoteBlock: Note.() -> Unit) {
+//        val currentState = screenState.value
+//        if (currentState is States.ShowNote) {
+//            val note = currentState.note
+//            note.apply(updatedNoteBlock)
+//            undoStack.add(note)
+//        }
+//    }
 }
+
+data class UndoRedoButtonState(
+    val undoEnabled: Boolean,
+    val redoEnabled: Boolean
+)

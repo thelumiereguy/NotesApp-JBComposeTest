@@ -17,7 +17,6 @@ interface ITextFieldStateProvider {
 }
 
 
-
 class TextFieldStateProvider : ITextFieldStateProvider {
 
     private val _titleTextState = MutableStateFlow("")

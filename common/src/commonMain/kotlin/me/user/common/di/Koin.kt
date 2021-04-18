@@ -10,6 +10,7 @@ import me.user.common.notes.data.mapper.NoteMapper
 import me.user.common.notes.data.network.NotesAPI
 import me.user.common.notes.presentation.viewmodel.create_note.CreateNotesViewModel
 import me.user.common.notes.presentation.viewmodel.notesfeed.NotesViewModel
+import me.user.common.notes.presentation.viewmodel.update_note.UndoRedoHandler
 import me.user.common.notes.presentation.viewmodel.update_note.UpdateNoteViewModel
 import me.user.common.platformModule
 import org.koin.core.context.startKoin
@@ -28,8 +29,9 @@ fun commonModule() = module {
     factory { NotesRepository(get(), get(), get(), get()) }
     factory { NotesViewModel(get()) }
     factory { CreateNotesViewModel(get()) }
-    factory { UpdateNoteViewModel(get()) }
+    factory { UpdateNoteViewModel(get(), get()) }
     factory { NotesAPI(get()) }
+    factory { UndoRedoHandler() }
     factory { NoteMapper() }
 }
 

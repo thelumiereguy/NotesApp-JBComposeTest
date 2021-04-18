@@ -27,6 +27,7 @@ object versions {
     const val sqliteJdbcDriver = "3.30.1"
 
     const val mockk = "1.10.6"
+    const val kotest = "4.4.3"
 
 }
 
