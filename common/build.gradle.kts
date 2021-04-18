@@ -2,7 +2,7 @@ import org.jetbrains.compose.compose
 
 plugins {
     kotlin("multiplatform")
-    kotlin("plugin.serialization") version versions.kotlinVersion
+    id("kotlinx-serialization")
     id("org.jetbrains.compose") version versions.jetBrainsCompose
     id("com.android.library")
     id("kotlin-android-extensions")
@@ -36,9 +36,9 @@ kotlin {
                 api(compose.material)
                 implementation("org.jetbrains.kotlin:kotlin-stdlib-common")
 
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${versions.serialization}")
+//                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${versions.serialization}")
 
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}")
+                implementation(Deps.coroutines)
 
                 implementation("org.hildan.krossbow:krossbow-stomp-core:${versions.krossbowVersion}")
                 implementation("org.hildan.krossbow:krossbow-websocket-core:${versions.krossbowVersion}")
@@ -65,7 +65,16 @@ kotlin {
 
             }
         }
-        val commonTest by getting
+        val commonTest by getting {
+            dependencies {
+                implementation("io.mockk:mockk:${versions.mockk}")
+                implementation(Deps.KotlinTest.junit)
+                implementation(Deps.KotlinTest.common)
+                implementation(Deps.KotlinTest.annotations)
+
+                implementation(Deps.coroutinesTest)
+            }
+        }
         val androidMain by getting {
             dependencies {
                 api("androidx.appcompat:appcompat:${versions.appCompat}")
@@ -80,11 +89,7 @@ kotlin {
                 implementation("com.squareup.sqldelight:android-driver:${versions.sqlDelight}")
             }
         }
-        val androidTest by getting {
-            dependencies {
-                implementation("junit:junit:4.13.2")
-            }
-        }
+        val androidTest by getting
         val desktopMain by getting {
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}")

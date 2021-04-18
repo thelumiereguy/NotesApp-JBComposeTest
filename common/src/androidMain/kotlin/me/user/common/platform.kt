@@ -1,6 +1,7 @@
 package me.user.common
 
 import com.squareup.sqldelight.android.AndroidSqliteDriver
+import kotlinx.coroutines.runBlocking
 import me.user.notes.db.NotesDatabase
 import org.hildan.krossbow.stomp.StompClient
 import org.hildan.krossbow.websocket.okhttp.OkHttpWebSocketClient
@@ -20,3 +21,5 @@ internal actual fun platformModule() = module {
         StompClient(OkHttpWebSocketClient())
     }
 }
+
+actual fun runTest(block: suspend () -> Unit) = runBlocking { block() }

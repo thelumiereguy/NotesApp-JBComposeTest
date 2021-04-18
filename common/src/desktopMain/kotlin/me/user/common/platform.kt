@@ -1,6 +1,7 @@
 package me.user.common
 
 import com.squareup.sqldelight.sqlite.driver.JdbcSqliteDriver
+import kotlinx.coroutines.runBlocking
 import me.user.notes.db.NotesDatabase
 import org.hildan.krossbow.stomp.StompClient
 import org.koin.dsl.module
@@ -20,3 +21,5 @@ internal actual fun platformModule() = module {
         StompClient()
     }
 }
+
+actual fun runTest(block: suspend () -> Unit) = runBlocking { block() }

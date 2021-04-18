@@ -5,19 +5,17 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import me.user.common.notes.data.NotesRepository
+import me.user.common.notes.presentation.viewmodel.ITextFieldStateProvider
+import me.user.common.notes.presentation.viewmodel.TextFieldStateProvider
 import me.user.common.notes.presentation.viewmodel.create_note.ButtonState
 
-class UpdateNoteViewModel(private val notesRepo: NotesRepository) {
+class UpdateNoteViewModel(
+    private val notesRepo: NotesRepository,
+    textFieldState: ITextFieldStateProvider = TextFieldStateProvider()
+) : ITextFieldStateProvider by textFieldState {
 
     private val _screenState: MutableStateFlow<States> = MutableStateFlow(States.Loading)
     val screenState: StateFlow<States> = _screenState
-
-
-    private val _titleTextState = MutableStateFlow("")
-    val titleTextState: StateFlow<String> = _titleTextState
-
-    private val _contentTextState = MutableStateFlow("")
-    val contentTextState: StateFlow<String> = _contentTextState
 
     private val _buttonLoadingState = MutableStateFlow(false)
 
@@ -32,14 +30,6 @@ class UpdateNoteViewModel(private val notesRepo: NotesRepository) {
                 isLoading
             )
         }
-
-    fun onTitleChanged(title: String) {
-        _titleTextState.value = title
-    }
-
-    fun onContentChanged(content: String) {
-        _contentTextState.value = content
-    }
 
     suspend fun getNoteById(noteId: Long) {
         notesRepo.findNoteById(noteId).collect { note ->
