@@ -73,6 +73,7 @@ kotlin {
                 implementation(Deps.KotlinTest.annotations)
 
                 implementation(Deps.coroutinesTest)
+                implementation("app.cash.turbine:turbine:0.4.1")
             }
         }
         val androidMain by getting {

@@ -5,19 +5,21 @@
 
 package me.user.common.notes.presentation.viewmodel.update_note
 
+import app.cash.turbine.test
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.launch
 import me.user.common.notes.data.NotesRepository
 import me.user.common.notes.data.models.Note
 import me.user.common.runTest
 import kotlin.test.*
+import kotlin.time.ExperimentalTime
+import kotlin.time.seconds
 
+@ExperimentalTime
 @ExperimentalCoroutinesApi
 internal class UpdateNoteViewModelTest {
 
@@ -29,7 +31,7 @@ internal class UpdateNoteViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
 
-        updateNoteViewModel = UpdateNoteViewModel(mockNotesRepository, UndoRedoHandler())
+        updateNoteViewModel = UpdateNoteViewModel(mockNotesRepository)
     }
 
 
@@ -72,6 +74,7 @@ internal class UpdateNoteViewModelTest {
         assert(updateNoteViewModel.saveButtonState.first().enabled)
     }
 
+
     @Test
     fun `when note's content changes, undo button should be enabled`() = runTest {
 
@@ -84,14 +87,16 @@ internal class UpdateNoteViewModelTest {
 
         updateNoteViewModel.getNoteById(0)
 
-        GlobalScope.launch {
-            updateNoteViewModel.observeUndoRedoState()
+        updateNoteViewModel.undoRedoButtonState.test(1.seconds) {
+
+            updateNoteViewModel.onContentChanged("newContent")
+
+            val state = expectItem()
+            print(state)
+            assert(state.undoEnabled)
+            assertFalse(state.redoEnabled)
+            cancel()
         }
-
-        updateNoteViewModel.onContentChanged("newContent")
-
-        assertTrue(updateNoteViewModel.undoRedoButtonState.first().undoEnabled)
-        assertFalse(updateNoteViewModel.undoRedoButtonState.first().redoEnabled)
     }
 
     @Test
@@ -107,18 +112,24 @@ internal class UpdateNoteViewModelTest {
 
         updateNoteViewModel.getNoteById(0)
 
-        GlobalScope.launch {
-            updateNoteViewModel.observeUndoRedoState()
+
+        updateNoteViewModel.undoRedoButtonState.test(1.seconds) {
 
             updateNoteViewModel.onContentChanged("newContent")
 
+            expectItem()
+
             updateNoteViewModel.undoClicked()
 
+            val state = expectItem()
+
+            print(state)
             assertEquals("content", updateNoteViewModel.contentTextState.value)
 
-            assertFalse(updateNoteViewModel.undoRedoButtonState.first().undoEnabled)
+            assertFalse(state.undoEnabled)
 
-            assertTrue(updateNoteViewModel.undoRedoButtonState.first().redoEnabled)
+            assertTrue(state.redoEnabled)
+            cancel()
         }
     }
 
@@ -136,22 +147,32 @@ internal class UpdateNoteViewModelTest {
 
         updateNoteViewModel.getNoteById(0)
 
-        GlobalScope.launch {
-            updateNoteViewModel.observeUndoRedoState()
+
+        updateNoteViewModel.undoRedoButtonState.test(1.seconds) {
 
             updateNoteViewModel.onContentChanged("newContent")
 
+            expectItem()
+
             updateNoteViewModel.undoClicked()
+
+            expectItem()
 
             assertEquals("content", updateNoteViewModel.contentTextState.value)
 
             updateNoteViewModel.redoClicked()
 
+            val state = expectItem()
+
+            print(state)
+
             assertEquals("newContent", updateNoteViewModel.contentTextState.value)
 
-            assertFalse(updateNoteViewModel.undoRedoButtonState.first().undoEnabled)
+            assertFalse(state.undoEnabled)
 
-            assertFalse(updateNoteViewModel.undoRedoButtonState.first().redoEnabled)
+            assertFalse(state.redoEnabled)
+
+            cancel()
         }
     }
 }

@@ -31,7 +31,6 @@ fun commonModule() = module {
     factory { CreateNotesViewModel(get()) }
     factory { UpdateNoteViewModel(get(), get()) }
     factory { NotesAPI(get()) }
-    factory { UndoRedoHandler() }
     factory { NoteMapper() }
 }
 

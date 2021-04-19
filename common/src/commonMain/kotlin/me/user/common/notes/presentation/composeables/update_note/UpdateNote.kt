@@ -24,6 +24,7 @@ import me.user.common.notes.presentation.composeables.notesfeed.Loading
 import me.user.common.notes.presentation.routes.RouterActions
 import me.user.common.notes.presentation.viewmodel.create_note.ButtonState
 import me.user.common.notes.presentation.viewmodel.update_note.States
+import me.user.common.notes.presentation.viewmodel.update_note.UndoRedoButtonState
 import me.user.common.notes.presentation.viewmodel.update_note.UpdateNoteViewModel
 
 
@@ -157,26 +158,38 @@ fun UpdateNote(
 
 @Composable
 fun ToolbarIcons(routerActions: (RouterActions) -> Unit, updateNoteViewModel: UpdateNoteViewModel) {
+
+    val undoRedoButtonState = updateNoteViewModel.undoRedoButtonState.collectAsState(
+        UndoRedoButtonState(false, false)
+    )
+
+    val coroutineScope = rememberCoroutineScope()
+
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         IconButton(onClick = {
-            routerActions(RouterActions.PopBackStack)
-        }, modifier = Modifier) {
+            coroutineScope.launch {
+                updateNoteViewModel.undoClicked()
+            }
+        }, modifier = Modifier, enabled = undoRedoButtonState.value.undoEnabled) {
             Icon(
                 imageVector = FontAwesomeIcons.Solid.Undo,
-                contentDescription = null,
+                contentDescription = "Undo",
                 tint = MaterialTheme.colors.onPrimary,
                 modifier = Modifier.size(16.dp)
             )
         }
 
         IconButton(onClick = {
-            routerActions(RouterActions.PopBackStack)
-        }, modifier = Modifier) {
+            coroutineScope.launch {
+                updateNoteViewModel.redoClicked()
+            }
+        }, modifier = Modifier, enabled = undoRedoButtonState.value.redoEnabled) {
             Icon(
                 imageVector = FontAwesomeIcons.Solid.Redo,
-                contentDescription = null,
+                contentDescription = "Redo",
                 tint = MaterialTheme.colors.onPrimary,
                 modifier = Modifier.size(16.dp)
             )

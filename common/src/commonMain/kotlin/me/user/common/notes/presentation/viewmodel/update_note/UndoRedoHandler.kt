@@ -5,27 +5,41 @@
 
 package me.user.common.notes.presentation.viewmodel.update_note
 
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import java.util.*
 
-class UndoRedoHandler {
+class UndoRedoHandler(
+    private val onContentChangedCallBack: OnContentChangedCallBack
+) {
 
     private val undoStack = Stack<String>()
     private val redoStack = Stack<String>()
+    private val contentHistory = Stack<String>()
 
-    private val _undoRedoVisibilityFlow = MutableSharedFlow<UndoRedoButtonState>()
-    val undoRedoVisibilityFlow: SharedFlow<UndoRedoButtonState> = _undoRedoVisibilityFlow
+    private val _undoRedoVisibilityFlow = Channel<UndoRedoButtonState>()
+    val undoRedoVisibilityFlow: Flow<UndoRedoButtonState> = _undoRedoVisibilityFlow.receiveAsFlow()
 
-    private val _contentFlow = MutableSharedFlow<String>()
-    val contentFlow: SharedFlow<String> = _contentFlow
+    private val events: Channel<Pair<String, String>> = Channel(1)
+    private val eventsFlow = events.consumeAsFlow()
+
+    init {
+        GlobalScope.launch {
+            eventsFlow.debounce(200L).distinctUntilChanged().collect { (oldValue, currentValue) ->
+                undoStack.push(oldValue)
+                contentHistory.push(currentValue)
+                updateState()
+            }
+        }
+    }
 
     /**
      * Events from Keyboard are added to UndoStack
      */
-    suspend fun onEvent(value: String) {
-        undoStack.add(value)
-        updateState()
+    fun onEvent(value: String, newContent: String) {
+        events.offer(Pair(value, newContent))
     }
 
 
@@ -35,19 +49,20 @@ class UndoRedoHandler {
     suspend fun onUndoClicked() {
         if (undoStack.isNotEmpty()) {
             val previousContent = undoStack.pop()
-            _contentFlow.emit(previousContent)
+            onContentChangedCallBack.onContentUpdated(previousContent)
         }
+        updateState()
     }
 
     /**
      * When pressed redo, 1 event will be popped and then pushed back into UndoStack
      */
     suspend fun onRedoClicked() {
-        if (undoStack.isNotEmpty()) {
-            val updatedContent = undoStack.pop()
-            redoStack.add(updatedContent)
-            _contentFlow.emit(updatedContent)
+        if (redoStack.isNotEmpty()) {
+            val updatedContent = contentHistory.pop()
+            onContentChangedCallBack.onContentUpdated(updatedContent)
         }
+        updateState()
     }
 
 
@@ -55,12 +70,16 @@ class UndoRedoHandler {
      * Recalculate and update visibility state of the buttons
      */
     private suspend fun updateState() {
-        _undoRedoVisibilityFlow.emit(
+        _undoRedoVisibilityFlow.send(
             UndoRedoButtonState(
                 undoStack.isNotEmpty(),
-                undoStack.isNotEmpty() && redoStack.isNotEmpty()
+                undoStack.isNotEmpty() || redoStack.isNotEmpty()
             )
         )
     }
 
+}
+
+interface OnContentChangedCallBack {
+    fun onContentUpdated(newContent: String)
 }

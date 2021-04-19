@@ -1,6 +1,9 @@
 package me.user.common.notes.presentation.viewmodel.update_note
 
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 import me.user.common.notes.data.NotesRepository
 import me.user.common.notes.presentation.viewmodel.ITextFieldStateProvider
 import me.user.common.notes.presentation.viewmodel.TextFieldStateProvider
@@ -8,9 +11,10 @@ import me.user.common.notes.presentation.viewmodel.create_note.ButtonState
 
 class UpdateNoteViewModel(
     private val notesRepo: NotesRepository,
-    private val undoRedoHandler: UndoRedoHandler,
     private val textFieldState: ITextFieldStateProvider = TextFieldStateProvider()
-) : ITextFieldStateProvider by textFieldState {
+) : ITextFieldStateProvider by textFieldState, OnContentChangedCallBack {
+
+    private val undoRedoHandler: UndoRedoHandler = UndoRedoHandler(this)
 
     private val _screenState: MutableStateFlow<States> = MutableStateFlow(States.Loading)
     val screenState: StateFlow<States> = _screenState
@@ -34,12 +38,13 @@ class UpdateNoteViewModel(
     suspend fun getNoteById(noteId: Long) {
         notesRepo.findNoteById(noteId).collect { note ->
             if (note != null) {
-                onTitleChanged(note.title)
-                onContentChanged(note.content)
+                textFieldState.onTitleChanged(note.title)
+                textFieldState.onContentChanged(note.content)
                 _screenState.value = States.ShowNote(note)
             }
         }
     }
+
 
     suspend fun saveNote(onNoteCreated: () -> Unit) {
         handleLoadingState(true)
@@ -51,23 +56,9 @@ class UpdateNoteViewModel(
         _buttonLoadingState.value = loading
     }
 
-    private val events: MutableStateFlow<String> =
-        MutableStateFlow("")
-
-    suspend fun observeUndoRedoState() {
-        events.debounce(300L).distinctUntilChanged().collect { newContent ->
-            undoRedoHandler.onEvent(newContent)
-        }
-
-        undoRedoHandler.contentFlow.collect { content ->
-            textFieldState.onContentChanged(content)
-        }
-
-    }
-
 
     override fun onContentChanged(content: String) {
-        events.value = contentTextState.value
+        undoRedoHandler.onEvent(contentTextState.value,content)
         textFieldState.onContentChanged(content)
     }
 
@@ -79,6 +70,9 @@ class UpdateNoteViewModel(
         undoRedoHandler.onRedoClicked()
     }
 
+    override fun onContentUpdated(newContent: String) {
+        textFieldState.onContentChanged(newContent)
+    }
 
 //    private fun updateNote(updatedNoteBlock: Note.() -> Unit) {
 //        val currentState = screenState.value
