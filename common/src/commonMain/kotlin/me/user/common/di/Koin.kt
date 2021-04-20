@@ -29,7 +29,7 @@ fun commonModule() = module {
     factory { NotesRepository(get(), get(), get(), get()) }
     factory { NotesViewModel(get()) }
     factory { CreateNotesViewModel(get()) }
-    factory { UpdateNoteViewModel(get(), get()) }
+    factory { UpdateNoteViewModel(get()) }
     factory { NotesAPI(get()) }
     factory { NoteMapper() }
 }

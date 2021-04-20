@@ -87,7 +87,7 @@ internal class UpdateNoteViewModelTest {
 
         updateNoteViewModel.getNoteById(0)
 
-        updateNoteViewModel.undoRedoButtonState.test(1.seconds) {
+        updateNoteViewModel.undoRedoButtonState.test {
 
             updateNoteViewModel.onContentChanged("newContent")
 
@@ -113,7 +113,7 @@ internal class UpdateNoteViewModelTest {
         updateNoteViewModel.getNoteById(0)
 
 
-        updateNoteViewModel.undoRedoButtonState.test(1.seconds) {
+        updateNoteViewModel.undoRedoButtonState.test {
 
             updateNoteViewModel.onContentChanged("newContent")
 
@@ -129,6 +129,7 @@ internal class UpdateNoteViewModelTest {
             assertFalse(state.undoEnabled)
 
             assertTrue(state.redoEnabled)
+
             cancel()
         }
     }
@@ -168,7 +169,50 @@ internal class UpdateNoteViewModelTest {
 
             assertEquals("newContent", updateNoteViewModel.contentTextState.value)
 
-            assertFalse(state.undoEnabled)
+            assert(state.undoEnabled)
+
+            assertFalse(state.redoEnabled)
+
+            cancel()
+        }
+    }
+
+
+    @Test
+    fun `when typing something new, redo button should be disabled and undo should be enabled`() = runTest {
+
+
+        val note = Note("title", "content", "", System.currentTimeMillis(), 0)
+
+        // Return Note with empty title and body
+        coEvery {
+            mockNotesRepository.findNoteById(0)
+        } returns flowOf(note)
+
+        updateNoteViewModel.getNoteById(0)
+
+
+        updateNoteViewModel.undoRedoButtonState.test(1.seconds) {
+
+            updateNoteViewModel.onContentChanged("newContent")
+
+            expectItem()
+
+            updateNoteViewModel.undoClicked()
+
+            expectItem()
+
+            assertEquals("content", updateNoteViewModel.contentTextState.value)
+
+            updateNoteViewModel.redoClicked()
+
+            assertEquals("newContent", updateNoteViewModel.contentTextState.value)
+
+            updateNoteViewModel.onContentChanged("contentAbc")
+
+            val state = expectItem()
+
+            assert(state.undoEnabled)
 
             assertFalse(state.redoEnabled)
 

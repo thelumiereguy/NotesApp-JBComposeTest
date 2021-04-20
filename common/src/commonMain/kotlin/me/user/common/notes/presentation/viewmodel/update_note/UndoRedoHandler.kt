@@ -15,7 +15,6 @@ class UndoRedoHandler(
     private val onContentChangedCallBack: OnContentChangedCallBack
 ) {
 
-    private val undoStack = Stack<String>()
     private val redoStack = Stack<String>()
     private val contentHistory = Stack<String>()
 
@@ -27,16 +26,19 @@ class UndoRedoHandler(
 
     init {
         GlobalScope.launch {
-            eventsFlow.debounce(200L).distinctUntilChanged().collect { (oldValue, currentValue) ->
-                undoStack.push(oldValue)
+            eventsFlow.debounce(500L).distinctUntilChanged().collect { (oldValue, currentValue) ->
+                if (contentHistory.isEmpty()) {
+                    contentHistory.push(oldValue)
+                }
                 contentHistory.push(currentValue)
+                redoStack.clear()
                 updateState()
             }
         }
     }
 
     /**
-     * Events from Keyboard are added to UndoStack
+     * Events from Keyboard are added to contentHistory
      */
     fun onEvent(value: String, newContent: String) {
         events.offer(Pair(value, newContent))
@@ -47,11 +49,13 @@ class UndoRedoHandler(
      * When pressed undo, 1 event will be popped and then pushed into RedoStack
      */
     suspend fun onUndoClicked() {
-        if (undoStack.isNotEmpty()) {
-            val previousContent = undoStack.pop()
-            onContentChangedCallBack.onContentUpdated(previousContent)
+        if (contentHistory.isNotEmpty()) {
+            val currentContent = contentHistory.pop()
+            redoStack.push(currentContent)
+            val oldValue = contentHistory.peek()
+            onContentChangedCallBack.onContentUpdated(oldValue)
+            updateState()
         }
-        updateState()
     }
 
     /**
@@ -59,10 +63,11 @@ class UndoRedoHandler(
      */
     suspend fun onRedoClicked() {
         if (redoStack.isNotEmpty()) {
-            val updatedContent = contentHistory.pop()
-            onContentChangedCallBack.onContentUpdated(updatedContent)
+            val previousContent = redoStack.pop()
+            contentHistory.push(previousContent)
+            onContentChangedCallBack.onContentUpdated(previousContent)
+            updateState()
         }
-        updateState()
     }
 
 
@@ -72,8 +77,8 @@ class UndoRedoHandler(
     private suspend fun updateState() {
         _undoRedoVisibilityFlow.send(
             UndoRedoButtonState(
-                undoStack.isNotEmpty(),
-                undoStack.isNotEmpty() || redoStack.isNotEmpty()
+                contentHistory.size > 1,
+                redoStack.isNotEmpty()
             )
         )
     }
