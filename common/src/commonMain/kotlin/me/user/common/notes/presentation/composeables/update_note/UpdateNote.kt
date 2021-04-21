@@ -1,19 +1,21 @@
 package me.user.common.notes.presentation.composeables.update_note
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import compose.icons.FeatherIcons
 import compose.icons.FontAwesomeIcons
 import compose.icons.feathericons.ChevronLeft
+import compose.icons.feathericons.Delete
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.EllipsisV
 import compose.icons.fontawesomeicons.solid.Redo
@@ -28,6 +30,7 @@ import me.user.common.notes.presentation.viewmodel.update_note.UndoRedoButtonSta
 import me.user.common.notes.presentation.viewmodel.update_note.UpdateNoteViewModel
 
 
+@ExperimentalMaterialApi
 @Composable
 fun UpdateNote(
     noteId: Long,
@@ -36,10 +39,8 @@ fun UpdateNote(
 ) {
     val coroutineScope = rememberCoroutineScope()
 
-    updateNoteViewModel.run {
-        coroutineScope.launch {
-            getNoteById(noteId)
-        }
+    LaunchedEffect(noteId) {
+        updateNoteViewModel.getNoteById(noteId)
     }
 
     val state = updateNoteViewModel.screenState.collectAsState()
@@ -49,8 +50,67 @@ fun UpdateNote(
             Loading(MaterialTheme.colors)
         }
         is States.ShowNote -> {
-            Scaffold(
+
+            val bottomSheetScaffoldState = rememberBottomSheetScaffoldState()
+
+            BottomSheetScaffold(
                 backgroundColor = MaterialTheme.colors.surface,
+                scaffoldState = bottomSheetScaffoldState,
+                sheetShape = MaterialTheme.shapes.medium,
+                sheetPeekHeight = 0.dp,
+                sheetBackgroundColor = Color.Black.copy(alpha = 0.1F),
+                sheetContent = {
+                    Box(
+                        modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                            .clickable(indication = null,
+                                interactionSource = remember { MutableInteractionSource() }) {
+                                coroutineScope.launch {
+                                    toggleBottomSheet(bottomSheetScaffoldState)
+                                }
+                            },
+                        contentAlignment = Alignment.BottomCenter
+                    ) {
+                        Card(
+                            backgroundColor = MaterialTheme.colors.surface,
+                            shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Column {
+                                Text(
+                                    "Options",
+                                    color = MaterialTheme.colors.onPrimary,
+                                    fontWeight = FontWeight.Black,
+                                    fontSize = 18.sp,
+                                    modifier = Modifier.padding(8.dp)
+                                )
+
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.clickable {
+                                        coroutineScope.launch {
+                                            updateNoteViewModel.deleteNote(
+                                                noteId
+                                            )
+                                        }
+                                    }) {
+                                    Icon(
+                                        imageVector = FeatherIcons.Delete,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colors.onPrimary,
+                                    )
+
+                                    Text(
+                                        "Delete Note",
+                                        color = MaterialTheme.colors.onPrimary,
+                                        fontWeight = FontWeight.Normal,
+                                        fontSize = 14.sp,
+                                        modifier = Modifier.padding(12.dp)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
             ) {
                 Box(
                     Modifier.fillMaxWidth()
@@ -67,88 +127,34 @@ fun UpdateNote(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            IconButton(onClick = {
-                                routerActions(RouterActions.PopBackStack)
-                            }) {
-                                Icon(
-                                    imageVector = FeatherIcons.ChevronLeft,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colors.onPrimary,
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                IconButton(onClick = {
+                                    routerActions(RouterActions.PopBackStack)
+                                }) {
+                                    Icon(
+                                        imageVector = FeatherIcons.ChevronLeft,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colors.onPrimary,
+                                    )
+                                }
+
+                                Text(
+                                    "Update Note",
+                                    color = MaterialTheme.colors.onPrimary,
+                                    fontWeight = FontWeight.Black,
+                                    fontSize = 24.sp
                                 )
                             }
 
-                            Text(
-                                "Update Note",
-                                color = MaterialTheme.colors.onPrimary,
-                                fontWeight = FontWeight.Black,
-                                fontSize = 24.sp
-                            )
 
-                            Box {
-                                ToolbarIcons(routerActions, updateNoteViewModel)
+                            ToolbarIcons(updateNoteViewModel) {
+                                coroutineScope.launch {
+                                    toggleBottomSheet(bottomSheetScaffoldState)
+                                }
                             }
                         }
 
-                        Column(
-                            Modifier.padding(8.dp),
-                        ) {
-
-                            val titleTextState = updateNoteViewModel.titleTextState.collectAsState()
-
-                            val saveButtonState =
-                                updateNoteViewModel.saveButtonState.collectAsState(ButtonState.defaultButtonState())
-
-                            NoteTextField(
-                                titleTextState.value,
-                                "Enter Title",
-                                updateNoteViewModel::onTitleChanged,
-                                FontWeight.Bold,
-                                isSingleLine = true
-                            )
-
-
-                            val contentState = updateNoteViewModel.contentTextState.collectAsState()
-
-                            NoteTextField(
-                                contentState.value,
-                                "Enter Content",
-                                updateNoteViewModel::onContentChanged,
-                                FontWeight.SemiBold,
-                                Modifier.weight(1F).fillMaxWidth().padding(8.dp),
-                                false
-                            )
-
-                            Button(
-                                enabled = saveButtonState.value.enabled,
-                                content = {
-                                    if (saveButtonState.value.showLoading) {
-                                        CircularProgressIndicator(
-                                            color = MaterialTheme.colors.onPrimary
-                                        )
-                                    } else {
-                                        Text(
-                                            "Save",
-                                            fontSize = 20.sp,
-                                            fontWeight = FontWeight.Bold,
-                                            modifier = Modifier.padding(4.dp)
-                                        )
-                                    }
-                                },
-                                modifier = Modifier.fillMaxWidth().padding(8.dp),
-                                shape = RoundedCornerShape(8.dp),
-                                colors = ButtonDefaults.buttonColors(
-                                    backgroundColor = MaterialTheme.colors.secondary,
-                                    contentColor = MaterialTheme.colors.onPrimary
-                                ),
-                                onClick = {
-                                    coroutineScope.launch {
-                                        updateNoteViewModel.saveNote {
-                                            routerActions(RouterActions.PopBackStack)
-                                        }
-                                    }
-                                }
-                            )
-                        }
+                        UpdateNoteContent(updateNoteViewModel, routerActions)
                     }
                 }
             }
@@ -157,14 +163,82 @@ fun UpdateNote(
 }
 
 @Composable
-fun ToolbarIcons(routerActions: (RouterActions) -> Unit, updateNoteViewModel: UpdateNoteViewModel) {
+private fun UpdateNoteContent(
+    updateNoteViewModel: UpdateNoteViewModel,
+    routerActions: (RouterActions) -> Unit
+) {
+    val coroutineScope = rememberCoroutineScope()
+
+    Column(
+        Modifier.padding(8.dp),
+    ) {
+
+        val titleTextState = updateNoteViewModel.titleTextState.collectAsState()
+
+        val saveButtonState =
+            updateNoteViewModel.saveButtonState.collectAsState(ButtonState.defaultButtonState())
+
+        NoteTextField(
+            titleTextState.value,
+            "Enter Title",
+            updateNoteViewModel::onTitleChanged,
+            FontWeight.Bold,
+            isSingleLine = true
+        )
+
+
+        val contentState = updateNoteViewModel.contentTextState.collectAsState()
+
+        NoteTextField(
+            contentState.value,
+            "Enter Content",
+            updateNoteViewModel::onContentChanged,
+            FontWeight.SemiBold,
+            Modifier.weight(1F).fillMaxWidth().padding(8.dp),
+            false
+        )
+
+        Button(
+            enabled = saveButtonState.value.enabled,
+            content = {
+                if (saveButtonState.value.showLoading) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colors.onPrimary
+                    )
+                } else {
+                    Text(
+                        "Save",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(4.dp)
+                    )
+                }
+            },
+            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = MaterialTheme.colors.secondary,
+                contentColor = MaterialTheme.colors.onPrimary
+            ),
+            onClick = {
+                coroutineScope.launch {
+                    updateNoteViewModel.saveNote {
+                        routerActions(RouterActions.PopBackStack)
+                    }
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun ToolbarIcons(updateNoteViewModel: UpdateNoteViewModel, onMenuClick: () -> Unit) {
 
     val undoRedoButtonState = updateNoteViewModel.undoRedoButtonState.collectAsState(
         UndoRedoButtonState(false, false)
     )
 
     val coroutineScope = rememberCoroutineScope()
-
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -177,7 +251,7 @@ fun ToolbarIcons(routerActions: (RouterActions) -> Unit, updateNoteViewModel: Up
             Icon(
                 imageVector = FontAwesomeIcons.Solid.Undo,
                 contentDescription = "Undo",
-                tint = MaterialTheme.colors.onPrimary,
+                tint = getButtonColor(undoRedoButtonState.value.undoEnabled),
                 modifier = Modifier.size(16.dp)
             )
         }
@@ -190,14 +264,12 @@ fun ToolbarIcons(routerActions: (RouterActions) -> Unit, updateNoteViewModel: Up
             Icon(
                 imageVector = FontAwesomeIcons.Solid.Redo,
                 contentDescription = "Redo",
-                tint = MaterialTheme.colors.onPrimary,
+                tint = getButtonColor(undoRedoButtonState.value.redoEnabled),
                 modifier = Modifier.size(16.dp)
             )
         }
 
-        IconButton(onClick = {
-            routerActions(RouterActions.PopBackStack)
-        }, modifier = Modifier) {
+        IconButton(onClick = onMenuClick, modifier = Modifier) {
             Icon(
                 imageVector = FontAwesomeIcons.Solid.EllipsisV,
                 contentDescription = null,
@@ -205,5 +277,22 @@ fun ToolbarIcons(routerActions: (RouterActions) -> Unit, updateNoteViewModel: Up
                 modifier = Modifier.size(16.dp)
             )
         }
+    }
+}
+
+@Composable
+private fun getButtonColor(enabled: Boolean): Color {
+    return if (enabled) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onSurface.copy(
+        alpha = ContentAlpha.disabled
+    )
+}
+
+
+@ExperimentalMaterialApi
+private suspend fun toggleBottomSheet(bottomSheetState: BottomSheetScaffoldState) {
+    if (bottomSheetState.bottomSheetState.isExpanded) {
+        bottomSheetState.bottomSheetState.collapse()
+    } else {
+        bottomSheetState.bottomSheetState.expand()
     }
 }

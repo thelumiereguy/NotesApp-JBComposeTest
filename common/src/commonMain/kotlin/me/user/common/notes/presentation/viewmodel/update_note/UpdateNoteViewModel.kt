@@ -74,6 +74,10 @@ class UpdateNoteViewModel(
         textFieldState.onContentChanged(newContent)
     }
 
+    suspend fun deleteNote(noteId: Long) {
+
+    }
+
 //    private fun updateNote(updatedNoteBlock: Note.() -> Unit) {
 //        val currentState = screenState.value
 //        if (currentState is States.ShowNote) {
