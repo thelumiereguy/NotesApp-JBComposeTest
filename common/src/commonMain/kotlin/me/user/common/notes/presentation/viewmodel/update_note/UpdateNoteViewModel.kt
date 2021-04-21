@@ -46,19 +46,19 @@ class UpdateNoteViewModel(
     }
 
 
-    suspend fun saveNote(onNoteCreated: () -> Unit) {
+    suspend fun updateContent() {
         handleLoadingState(true)
+        if (screenState.value is States.ShowNote) {
+            val note = (screenState.value as States.ShowNote).note
+            val newNote = note.copy(title = titleTextState.value, content = contentTextState.value)
+            notesRepo.updateNote(newNote)
+        }
         handleLoadingState(false)
-        onNoteCreated()
-    }
-
-    private fun handleLoadingState(loading: Boolean) {
-        _buttonLoadingState.value = loading
     }
 
 
     override fun onContentChanged(content: String) {
-        undoRedoHandler.onEvent(contentTextState.value,content)
+        undoRedoHandler.onEvent(contentTextState.value, content)
         textFieldState.onContentChanged(content)
     }
 
@@ -74,14 +74,9 @@ class UpdateNoteViewModel(
         textFieldState.onContentChanged(newContent)
     }
 
-//    private fun updateNote(updatedNoteBlock: Note.() -> Unit) {
-//        val currentState = screenState.value
-//        if (currentState is States.ShowNote) {
-//            val note = currentState.note
-//            note.apply(updatedNoteBlock)
-//            undoStack.add(note)
-//        }
-//    }
+    private fun handleLoadingState(loading: Boolean) {
+        _buttonLoadingState.value = loading
+    }
 }
 
 data class UndoRedoButtonState(

@@ -11,6 +11,7 @@ import me.user.common.notes.data.models.Note
 import me.user.common.notes.data.network.NotesAPI
 import me.user.common.notes.data.network.domain
 import me.user.common.notes.data.network.model.NotesUpdateEventResponse
+import me.user.common.notes.data.network.model.UpdateType
 import me.user.notes.db.NotesDatabase
 import org.hildan.krossbow.stomp.StompClient
 import org.hildan.krossbow.stomp.conversions.kxserialization.subscribe
@@ -57,8 +58,29 @@ class NotesRepository(
                 val collectorJob = launch {
                     subscription.collect { noteUpdateEvent ->
                         println("MainViewModel Received: ${noteUpdateEvent.toString()}")
+                        processUpdateEvents(noteUpdateEvent)
                         onUpdate()
                     }
+                }
+            }
+        }
+    }
+
+    private suspend fun processUpdateEvents(noteUpdateEvent: NotesUpdateEventResponse) {
+        when (noteUpdateEvent.type) {
+            UpdateType.created.name -> {
+                with(noteUpdateEvent.new_note) {
+                    notesQueries?.insertItem(id, title, content, created_by, created_on)
+                }
+            }
+            UpdateType.deleted.name -> {
+                with(noteUpdateEvent.new_note) {
+                    notesQueries?.deleteNoteById(id)
+                }
+            }
+            UpdateType.updated.name -> {
+                with(noteUpdateEvent.new_note) {
+                    notesQueries?.insertItem(id, title, content, created_by, created_on)
                 }
             }
         }
@@ -87,6 +109,15 @@ class NotesRepository(
         val noteResponse = notesAPI.deleteNote(noteId)
         noteResponse?.let {
             notesQueries?.deleteNoteById(it.id)
+        }
+        return noteResponse?.let { noteMapper.toDomainEntity(it) }
+    }
+
+    suspend fun updateNote(newNote: Note): Note? {
+        val noteRequestModel = noteMapper.fromDomainEntity(newNote)
+        val noteResponse = notesAPI.updateNote(noteRequestModel)
+        noteResponse?.let {
+            notesQueries?.insertItem(it.id, it.title, it.content, it.created_by, it.created_on)
         }
         return noteResponse?.let { noteMapper.toDomainEntity(it) }
     }

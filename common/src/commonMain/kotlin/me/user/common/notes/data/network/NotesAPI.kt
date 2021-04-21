@@ -35,6 +35,19 @@ class NotesAPI(private val client: HttpClient) {
             null
         }
     }
+
+    suspend fun updateNote(noteRequestModel: NoteDTO): NoteDTO? {
+        return try {
+            val response =
+                client.put<GenericResponseWrapper<UpdateResponseDTO>>("$baseURL/updateNote") {
+                    contentType(ContentType.Application.Json)
+                    body = noteRequestModel
+                }
+            response.data.note
+        } catch (e: Exception) {
+            null
+        }
+    }
 }
 
 const val domain = "192.168.0.107:8080"

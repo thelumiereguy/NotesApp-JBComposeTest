@@ -184,9 +184,7 @@ private fun UpdateNoteContent(
             ),
             onClick = {
                 coroutineScope.launch {
-                    updateNoteViewModel.saveNote {
-                        routerActions(RouterActions.PopBackStack)
-                    }
+                    updateNoteViewModel.updateContent()
                 }
             }
         )
