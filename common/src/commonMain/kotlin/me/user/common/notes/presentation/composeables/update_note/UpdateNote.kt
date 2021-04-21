@@ -1,11 +1,12 @@
 package me.user.common.notes.presentation.composeables.update_note
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -15,12 +16,12 @@ import androidx.compose.ui.unit.sp
 import compose.icons.FeatherIcons
 import compose.icons.FontAwesomeIcons
 import compose.icons.feathericons.ChevronLeft
-import compose.icons.feathericons.Delete
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.EllipsisV
 import compose.icons.fontawesomeicons.solid.Redo
 import compose.icons.fontawesomeicons.solid.Undo
 import kotlinx.coroutines.launch
+import me.user.common.notes.data.models.Note
 import me.user.common.notes.presentation.composeables.create_note.NoteTextField
 import me.user.common.notes.presentation.composeables.notesfeed.Loading
 import me.user.common.notes.presentation.routes.RouterActions
@@ -37,7 +38,6 @@ fun UpdateNote(
     updateNoteViewModel: UpdateNoteViewModel,
     routerActions: (RouterActions) -> Unit
 ) {
-    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(noteId) {
         updateNoteViewModel.getNoteById(noteId)
@@ -45,7 +45,7 @@ fun UpdateNote(
 
     val state = updateNoteViewModel.screenState.collectAsState()
 
-    when (state.value) {
+    when (val currentState = state.value) {
         States.Loading -> {
             Loading(MaterialTheme.colors)
         }
@@ -58,64 +58,28 @@ fun UpdateNote(
                 scaffoldState = bottomSheetScaffoldState,
                 sheetShape = MaterialTheme.shapes.medium,
                 sheetPeekHeight = 0.dp,
-                sheetBackgroundColor = Color.Black.copy(alpha = 0.1F),
+                sheetBackgroundColor = Color.Transparent,
                 sheetContent = {
-                    Box(
-                        modifier = Modifier.fillMaxWidth().fillMaxHeight()
-                            .clickable(indication = null,
-                                interactionSource = remember { MutableInteractionSource() }) {
-                                coroutineScope.launch {
-                                    toggleBottomSheet(bottomSheetScaffoldState)
-                                }
-                            },
-                        contentAlignment = Alignment.BottomCenter
-                    ) {
-                        Card(
-                            backgroundColor = MaterialTheme.colors.surface,
-                            shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Column {
-                                Text(
-                                    "Options",
-                                    color = MaterialTheme.colors.onPrimary,
-                                    fontWeight = FontWeight.Black,
-                                    fontSize = 18.sp,
-                                    modifier = Modifier.padding(8.dp)
-                                )
-
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier.clickable {
-                                        coroutineScope.launch {
-                                            updateNoteViewModel.deleteNote(
-                                                noteId
-                                            )
-                                        }
-                                    }) {
-                                    Icon(
-                                        imageVector = FeatherIcons.Delete,
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colors.onPrimary,
-                                    )
-
-                                    Text(
-                                        "Delete Note",
-                                        color = MaterialTheme.colors.onPrimary,
-                                        fontWeight = FontWeight.Normal,
-                                        fontSize = 14.sp,
-                                        modifier = Modifier.padding(12.dp)
-                                    )
-                                }
-                            }
+                    OptionsBottomSheet(
+                        toggleBottomSheetState = {
+                            toggleBottomSheet(bottomSheetScaffoldState)
+                        }, bottomSheetActions = {
+                            processBottomSheetActions(
+                                it,
+                                updateNoteViewModel,
+                                currentState.note
+                            )
                         }
-                    }
+                    )
                 }
             ) {
                 Box(
                     Modifier.fillMaxWidth()
                         .fillMaxHeight(),
                 ) {
+
+                    val coroutineScope = rememberCoroutineScope()
+
                     Column {
                         Row(
                             Modifier.padding(
@@ -158,6 +122,18 @@ fun UpdateNote(
                     }
                 }
             }
+        }
+    }
+}
+
+suspend fun processBottomSheetActions(
+    bottomSheetActions: BottomSheetActions,
+    updateNoteViewModel: UpdateNoteViewModel,
+    note: Note,
+) {
+    when (bottomSheetActions) {
+        BottomSheetActions.DeleteNote -> {
+            updateNoteViewModel.deleteNote(note.id)
         }
     }
 }
