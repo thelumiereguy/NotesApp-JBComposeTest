@@ -14,3 +14,6 @@ SELECT * FROM Notes ORDER BY created_on DESC;
 
 getNoteById:
 SELECT * FROM Notes alias WHERE id = ? LIMIT 1;
+
+deleteNoteById:
+DELETE FROM Notes WHERE id = ?;

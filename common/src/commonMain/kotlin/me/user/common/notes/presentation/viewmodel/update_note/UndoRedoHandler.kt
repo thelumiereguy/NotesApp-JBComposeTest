@@ -26,14 +26,18 @@ class UndoRedoHandler(
 
     init {
         GlobalScope.launch {
-            eventsFlow.debounce(500L).distinctUntilChanged().collect { (oldValue, currentValue) ->
-                if (contentHistory.isEmpty()) {
-                    contentHistory.push(oldValue)
+            eventsFlow
+                .onEach { (oldValue, _) ->
+                    if (contentHistory.isEmpty())
+                        contentHistory.push(oldValue)
                 }
-                contentHistory.push(currentValue)
-                redoStack.clear()
-                updateState()
-            }
+                .debounce(500L)
+                .distinctUntilChanged()
+                .collect { (oldValue, currentValue) ->
+                    contentHistory.push(currentValue)
+                    redoStack.clear()
+                    updateState()
+                }
         }
     }
 

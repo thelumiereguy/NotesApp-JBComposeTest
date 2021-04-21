@@ -21,13 +21,13 @@ import compose.icons.fontawesomeicons.solid.EllipsisV
 import compose.icons.fontawesomeicons.solid.Redo
 import compose.icons.fontawesomeicons.solid.Undo
 import kotlinx.coroutines.launch
-import me.user.common.notes.data.models.Note
 import me.user.common.notes.presentation.composeables.create_note.NoteTextField
 import me.user.common.notes.presentation.composeables.notesfeed.Loading
 import me.user.common.notes.presentation.routes.RouterActions
 import me.user.common.notes.presentation.viewmodel.create_note.ButtonState
 import me.user.common.notes.presentation.viewmodel.update_note.States
 import me.user.common.notes.presentation.viewmodel.update_note.UndoRedoButtonState
+import me.user.common.notes.presentation.viewmodel.update_note.UpdateNoteOptionsViewmodel
 import me.user.common.notes.presentation.viewmodel.update_note.UpdateNoteViewModel
 
 
@@ -35,6 +35,7 @@ import me.user.common.notes.presentation.viewmodel.update_note.UpdateNoteViewMod
 @Composable
 fun UpdateNote(
     noteId: Long,
+    optionsViewmodel: UpdateNoteOptionsViewmodel,
     updateNoteViewModel: UpdateNoteViewModel,
     routerActions: (RouterActions) -> Unit
 ) {
@@ -61,14 +62,11 @@ fun UpdateNote(
                 sheetBackgroundColor = Color.Transparent,
                 sheetContent = {
                     OptionsBottomSheet(
+                        currentState.note,
+                        optionsViewmodel,
+                        routerActions,
                         toggleBottomSheetState = {
                             toggleBottomSheet(bottomSheetScaffoldState)
-                        }, bottomSheetActions = {
-                            processBottomSheetActions(
-                                it,
-                                updateNoteViewModel,
-                                currentState.note
-                            )
                         }
                     )
                 }
@@ -126,18 +124,6 @@ fun UpdateNote(
     }
 }
 
-suspend fun processBottomSheetActions(
-    bottomSheetActions: BottomSheetActions,
-    updateNoteViewModel: UpdateNoteViewModel,
-    note: Note,
-) {
-    when (bottomSheetActions) {
-        BottomSheetActions.DeleteNote -> {
-            updateNoteViewModel.deleteNote(note.id)
-        }
-    }
-}
-
 @Composable
 private fun UpdateNoteContent(
     updateNoteViewModel: UpdateNoteViewModel,
@@ -183,7 +169,7 @@ private fun UpdateNoteContent(
                     )
                 } else {
                     Text(
-                        "Save",
+                        "Update note",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(4.dp)

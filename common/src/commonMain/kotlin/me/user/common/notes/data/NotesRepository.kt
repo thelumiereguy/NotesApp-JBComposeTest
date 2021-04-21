@@ -82,4 +82,12 @@ class NotesRepository(
 
         emit(note)
     }
+
+    suspend fun deleteNote(noteId: Long): Note? {
+        val noteResponse = notesAPI.deleteNote(noteId)
+        noteResponse?.let {
+            notesQueries?.deleteNoteById(it.id)
+        }
+        return noteResponse?.let { noteMapper.toDomainEntity(it) }
+    }
 }

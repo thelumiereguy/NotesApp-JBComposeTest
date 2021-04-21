@@ -16,11 +16,24 @@ class NotesAPI(private val client: HttpClient) {
         client.get<GenericResponseWrapper<GetNotesResponseDTO>>("$baseURL/getNotes")
 
     suspend fun createNote(noteRequestModel: NoteDTO): NoteDTO {
-        val response = client.post<GenericResponseWrapper<UpdateResponseDTO>>("$baseURL/createNote") {
-            contentType(ContentType.Application.Json)
-            body = noteRequestModel
-        }
+        val response =
+            client.post<GenericResponseWrapper<UpdateResponseDTO>>("$baseURL/createNote") {
+                contentType(ContentType.Application.Json)
+                body = noteRequestModel
+            }
         return response.data.note
+    }
+
+    suspend fun deleteNote(noteId: Long): NoteDTO? {
+        return try {
+            val response =
+                client.delete<GenericResponseWrapper<UpdateResponseDTO>>("$baseURL/deleteNote/$noteId") {
+                    contentType(ContentType.Application.Json)
+                }
+            response.data.note
+        } catch (e: Exception) {
+            null
+        }
     }
 }
 

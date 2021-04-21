@@ -9,11 +9,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -22,14 +20,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import compose.icons.FeatherIcons
-import compose.icons.feathericons.X
 import kotlinx.coroutines.launch
+import me.user.common.notes.data.models.Note
+import me.user.common.notes.presentation.routes.RouterActions
+import me.user.common.notes.presentation.viewmodel.update_note.UpdateNoteOptionsViewmodel
 
 @Composable
 fun OptionsBottomSheet(
+    note: Note,
+    optionsViewmodel: UpdateNoteOptionsViewmodel,
+    routerActions: (RouterActions) -> Unit,
     toggleBottomSheetState: suspend () -> Unit,
-    bottomSheetActions: suspend (BottomSheetActions) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -66,19 +67,32 @@ fun OptionsBottomSheet(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth().clickable {
                         coroutineScope.launch {
-                            bottomSheetActions(BottomSheetActions.DeleteNote)
+                            optionsViewmodel.deleteNote(note.id) {
+                                routerActions(RouterActions.PopBackStack)
+                            }
                         }
                     }.padding(16.dp)
                 ) {
-                    Icon(
-                        imageVector = FeatherIcons.X,
-                        contentDescription = null,
-                        tint = Color.DarkGray,
-                        modifier = Modifier.size(24.dp)
-                    )
+
+                    val state = optionsViewmodel.deleteOptionState.collectAsState()
+
+                    if (state.value.isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp),
+                            color = Color.DarkGray
+                        )
+                    } else {
+                        Icon(
+                            imageVector = state.value.icon,
+                            contentDescription = null,
+                            tint = Color.DarkGray,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+
 
                     Text(
-                        "Delete Note",
+                        state.value.name,
                         color = Color.DarkGray,
                         fontWeight = FontWeight.Normal,
                         fontSize = 20.sp,
@@ -88,8 +102,4 @@ fun OptionsBottomSheet(
             }
         }
     }
-}
-
-sealed class BottomSheetActions {
-    object DeleteNote : BottomSheetActions()
 }
