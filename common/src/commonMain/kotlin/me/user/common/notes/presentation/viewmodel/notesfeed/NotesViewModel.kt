@@ -1,13 +1,10 @@
 package me.user.common.notes.presentation.viewmodel.notesfeed
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.user.common.notes.data.NotesRepository
-import kotlin.coroutines.coroutineContext
 
 class NotesViewModel(private val notesRepo: NotesRepository) {
 
@@ -26,13 +23,7 @@ class NotesViewModel(private val notesRepo: NotesRepository) {
     }
 
     suspend fun observeChanges() {
-        notesRepo.observeChanges {
-            with(CoroutineScope(coroutineContext)) {
-                launch {
-                    getNotes()
-                }
-            }
-        }
+        notesRepo.observeChanges()
     }
 
 }

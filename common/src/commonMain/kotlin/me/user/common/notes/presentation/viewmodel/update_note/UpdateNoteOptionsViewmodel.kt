@@ -23,7 +23,7 @@ class UpdateNoteOptionsViewmodel(private val notesRepo: NotesRepository) {
     )
     val deleteOptionState: StateFlow<OptionState> = _deleteOptionState
 
-    suspend fun deleteNote(noteId: Long,onSuccess:()->Unit) {
+    suspend fun deleteNote(noteId: Long, onSuccess: () -> Unit) {
         _deleteOptionState.value = deleteOptionState.value.copy(isLoading = true)
         val response = notesRepo.deleteNote(noteId)
         response?.let { onSuccess() }

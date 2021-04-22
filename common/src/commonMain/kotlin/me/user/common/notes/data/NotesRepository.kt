@@ -43,7 +43,7 @@ class NotesRepository(
         })?.asFlow()?.flowOn(Dispatchers.Default)?.mapToList()
     }
 
-    suspend fun observeChanges(onUpdate: suspend () -> Unit) {
+    suspend fun observeChanges() {
         with(CoroutineScope(coroutineContext)) {
             launch {
                 val session = client.connect("ws://$domain/ws")
@@ -55,11 +55,10 @@ class NotesRepository(
                     NotesUpdateEventResponse.serializer()
                 )
 
-                val collectorJob = launch {
+                launch {
                     subscription.collect { noteUpdateEvent ->
                         println("MainViewModel Received: ${noteUpdateEvent.toString()}")
                         processUpdateEvents(noteUpdateEvent)
-                        onUpdate()
                     }
                 }
             }
