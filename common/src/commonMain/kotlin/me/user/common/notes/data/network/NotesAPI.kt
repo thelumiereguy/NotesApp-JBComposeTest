@@ -50,4 +50,4 @@ class NotesAPI(private val client: HttpClient) {
     }
 }
 
-const val domain = "192.168.0.107:8080"
+const val domain = "192.168.43.176:8080"

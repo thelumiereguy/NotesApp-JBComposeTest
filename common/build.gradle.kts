@@ -44,7 +44,7 @@ kotlin {
                 implementation("org.hildan.krossbow:krossbow-websocket-core:${versions.krossbowVersion}")
                 implementation("org.hildan.krossbow:krossbow-stomp-kxserialization:${versions.krossbowVersion}")
 
-//                // KOIN
+//              KOIN
                 api("io.insert-koin:koin-core:${versions.koin}")
                 api("io.insert-koin:koin-test:${versions.koin}")
 
